@@ -13,14 +13,15 @@ input.blur {
 <script type="text/javascript" src="@{'/public/javascripts/jquery.hint.js'}"></script>
 <script type="text/javascript">
 
-    var apps = [{name: "Spring MVC & Hibernate", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "maven"},
-        {name: "Simple Web App", demoUrl: "http://glowing-autumn-4004.herokuapp.com/", sourceUrl: "https://github.com/jamesward/hellojavaheroku", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
-        {name: "Simple Play! App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "play"},
-        {name: "Simple Play! + Scala App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "play+scala"},
+    var apps = [
+        {name: "Spring MVC & Hibernate", demoUrl: "http://floating-samurai-9174.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellospringroo", gitUrl: "git://github.com/jamesward/hellospringroo.git", buildTool: "maven"},
+        {name: "Simple Web App", demoUrl: "http://glowing-autumn-4004.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellojavaheroku", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
+        {name: "Simple Play! App", demoUrl: "http://warm-samurai-6100.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplay", gitUrl: "git://github.com/jamesward/helloplay.git", buildTool: "play"},
+        {name: "Simple Play! + Scala App", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play+scala"},
         {name: "Java + Redis Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "maven"},
         {name: "Java + JDBC Web App", demoUrl: "", sourceUrl: "", gitUrl:"", buildTool: "maven"},
-        {name: "Scala/SBT Finagle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "sbt"},
-        {name: "Scala + Akka", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "sbt"},
+        {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
+        {name: "Scala + Akka", demoUrl: "http://evening-night-5607.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
         {name: "Java/Gradle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "gradle"},
         {name: "Grails Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "grails"}
     ];
@@ -52,7 +53,7 @@ input.blur {
             }
         });
 
-        $.each(apps, function(index, value) {
+        $.each(apps.reverse(), function(index, value) {
             if (value.gitUrl != "") {
                 $("#apps").prepend('<label><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)<br/>');
             }
