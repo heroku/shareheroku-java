@@ -6,6 +6,20 @@
 input.blur {
     color: #999;
 }
+.codeExample {
+    background-color: #dddddd;
+    margin-left: 30px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 10pt;
+}
+h4 {
+    font-size: 10pt;
+}
+h5 {
+    margin-left: 20px;
+    font-size: 8pt;
+}
 </style>
 #{/set}
 #{set 'moreScripts'}
@@ -14,17 +28,23 @@ input.blur {
 <script type="text/javascript">
 
     var apps = [
-        {name: "Spring MVC & Hibernate", demoUrl: "http://floating-samurai-9174.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellospringroo", gitUrl: "git://github.com/jamesward/hellospringroo.git", buildTool: "maven"},
         {name: "Simple Web App", demoUrl: "http://glowing-autumn-4004.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellojavaheroku", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
         {name: "Simple Play! App", demoUrl: "http://warm-samurai-6100.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplay", gitUrl: "git://github.com/jamesward/helloplay.git", buildTool: "play"},
-        {name: "Simple Play! + Scala App", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play+scala"},
+        {name: "Simple Play! + Scala App", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play"},
+        {name: "Spring MVC & Hibernate (Spring Roo petclinic)", demoUrl: "http://floating-samurai-9174.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellospringroo", gitUrl: "git://github.com/jamesward/hellospringroo.git", buildTool: "maven"},
         {name: "Java + Redis Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "maven"},
         {name: "Java + JDBC Web App", demoUrl: "", sourceUrl: "", gitUrl:"", buildTool: "maven"},
         {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
-        {name: "Scala + Akka", demoUrl: "http://evening-night-5607.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
+        {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
         {name: "Java/Gradle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "gradle"},
         {name: "Grails Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "grails"}
     ];
+
+    var buildTools = {
+        maven: {installInstructions: 'Install <a href="http://maven.apache.org/download.html">Maven</a>', buildInstruction: "mvn package"},
+        sbt: {installInstructions: 'Install <a href="https://github.com/harrah/xsbt/wiki/Getting-Started-Setup">SBT</a>', buildInstruction: "sbt stage"},
+        play: {installInstructions: 'Install <a href="http://www.playframework.org/download">Play!</a>', buildInstruction: "play run --%prod"}
+    };
 
     var selectedApp;
 
@@ -46,10 +66,50 @@ input.blur {
             }
 
             if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
+                $('#createAppForm').children().attr("disabled", true);
+                $('#createAppForm').fadeTo("slow", 0.35);
+                $('#progressBar').show();
+                $('#creatingApp').show();
+
+
                 $.post("/", {emailAddress: $('#emailAddress').val(), gitUrl: selectedApp.gitUrl}, function(data) {
-                    window.alert("App created! " + data.result.httpUrl);
+                    if (data.result) {
+                        $('#createAppForm').children().attr("disabled", false);
+                        $('#createAppForm').hide();
+                        $('#progressBar').hide();
+                        $('#creatingApp').hide();
+                        $('#appReady').show();
+
+                        $('#step1').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
+                        $('#step8').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
+
+                        $('#step4').append('git clone -o heroku ' + data.result.gitUrl);
+
+                        if (selectedApp.buildTool != "")
+                        {
+                            $('#step2').append('<h5>c) ' + buildTools[selectedApp.buildTool].installInstructions + '</h5>');
+
+                            $('#step6').append('cd ' + data.result.name + '<br/>');
+
+                            $('#step6').append(buildTools[selectedApp.buildTool].buildInstruction);
+                        }
+                        else {
+                            $('#step6').hide();
+                        }
+                    }
+                    else if (data.error) {
+                        $.each(data.error, function(index, value) {
+                            $("#errors").append(value + "<br/>");
+                        });
+                    }
+                    else {
+                        window.alert("Unknown error occured");
+                    }
                 });
                 //todo: error handler
+            }
+            else {
+                // input error handler
             }
         });
 
@@ -64,8 +124,19 @@ input.blur {
         $('#emailAddress').hint();
         $('#customGitUrl').hint();
 
+        $('#shareAppButton').attr("disabled", true);
+
         $("input[name=app]").change(function () {
             checkCustomGitUrlVisible();
+            checkFormReady();
+        });
+
+        $("#emailAddress").keyup(function () {
+            checkFormReady();
+        });
+
+        $("#customGitUrl").keyup(function () {
+            checkFormReady();
         });
 
         checkCustomGitUrlVisible();
@@ -80,85 +151,102 @@ input.blur {
         }
     }
 
+    function checkFormReady() {
+        if ($("#customGitUrlRadio").attr("checked") && ($("#customGitUrl").val() == $("#customGitUrl")[0].title)) {
+            $('#shareAppButton').attr("disabled", true);
+            return;
+        }
+
+        if (($("input[name=app]:checked")) && ($("#emailAddress").val() != $("#emailAddress")[0].title) && (validateEmail($("#emailAddress").val()))) {
+            $('#shareAppButton').attr("disabled", false);
+        }
+        else {
+            $('#shareAppButton').attr("disabled", true);
+        }
+    }
+
+    function validateEmail(email)
+    {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        return email.match(re)
+    }
+
 </script>
 #{/set}
 
 <h1>Get started with Java on Heroku!</h1>
 
 <div style="max-width: 660px">
-<p>
-<h3>Step 1) Pick an app to start with:</h3>
+<div id="createAppForm">
+<h4>Step 1) Pick an app to start with:</h4>
 <div id="apps">
     <label><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/>
 </div>
-</p>
-<p>
-<h3>Step 2) Clone the app:</h3>
-<input id="emailAddress" type="text" title="foo@bar.com"/>
+<h4>Step 2) Clone the app and give access to:</h4>
+<input id="emailAddress" type="text" title="foo@bar.com" class="required email"/>
 <button id="shareAppButton">Go!</button><br/>
+
 <div id="errors" style="color: #ff0000">
-
 </div>
+</div>
+<img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 150px; left: 50px; position: absolute;"/>
 <br/>
-<div style="background-color: #dddddd">
-<p style="color: #ff0000">Show a progress bar here once the button is clicked and disappear when the app is created</p>
-<p style="color: #ff0000">This area will show up once the button is clicked</p>
-Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been actived before proceeding.  While your app is being created watch this quick intro to Java on Heroku:<br/>
+<div id="creatingApp" style="display: none;">
 
-<h4><a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Java on Heroku Video</a></h4>
+<b>Your app is being created!</b><br/>
+<br/>
+Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been activated before proceeding.  While your app is being created watch a quick <a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Intro to Java on Heroku Video</a>.<br/>
 </div>
-</p>
-<div style="background-color: #dddddd">
-<p style="color: #ff0000">This area will show up once the app is created</p>
+<div id="appReady" style="display: none;">
+<h3>Your app is ready!</h3>
+<div id="step1">
+<h4>Step 1) Check out your app</h4>
+<!-- link here -->
+</div>
+<div id="step2">
+<h4>Step 2) Setup your environment</h4>
 
-<p>
-<h3>Step 3) Check out your app:</h3>
+<h5>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h5>
 
-    <a href="http://asdf-asdf-1234.herokuapp.com">http://asdf-asdf-1234.herokuapp.com</a> <p style="color: #ff0000">This URL will come from the results of app creation</p>
+<h5>b) Install the Heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a></h5>
 
-</p>
-<p>
-<h3>Step 4) Setup your environment:</h3>
+</div>
+<div>
+<h4>Step 3) Login to Heroku from the command line</h4>
 
-<h4>a) Install git (used to transfer the app to/from Heroku)</h4>
-
-<h4>b) Install the Heroku command line client (Windows, Mac, Linux)</h4>
-
-<p style="color: #ff0000">This instruction will be dependent on the build tool used by the selected app</p>
-<h4>c) Install Maven </h4>
-</p>
-<p>
-<h3>Step 5) Login to Heroku from the command line:</h3>
-
-    <p style="background-color: #eeeeee; margin-left: 30px">
+    <p class="codeExample">
     heroku login
     </p>
 
 This should also setup an SSH key and pair it with your Hekoku account.
-</p>
-<p>
-<h3>Step 6) Copy the app from Heroku to your local machine:</h3>
-    <p style="background-color: #eeeeee; margin-left: 30px">
-    git clone git@heroku.com/adsf-asdf-1234.git
+</div>
+<div>
+<h4>Step 4) Copy the app from Heroku to your local machine</h4>
+    <p id="step4" class="codeExample">
+
     </p>
-</p>
-<p>
-<h3>Step 7) Makes some changes to the app.</h3>
-</p>
-<p>
-<h3>Step 8) Make sure the app still compiles locally:</h3>
-    <p style="background-color: #eeeeee; margin-left: 30px">
-    mvn package
+</div>
+<div>
+<h4>Step 5) Makes some changes to the app</h4>
+</div>
+<div>
+<h4>Step 6) Make sure the app still compiles locally</h4>
+    <p id="step6" class="codeExample">
+
     </p>
-</p>
-<p>
-<h3>Step 9) Add the changes to git, commit them, and push the changes to Heroku:</h3>
-    <p style="background-color: #eeeeee; margin-left: 30px">
-    git add .
-    git commit -m "changed something"
-    git push heroku master
+</div>
+<div>
+<h4>Step 7) Add the changes to git, commit them, and push the changes to Heroku</h4>
+    <p class="codeExample">
+    git add .<br/>
+    git commit -m "changed something"<br/>
+    git push heroku master<br/>
     </p>
-</p>
-<h3>Step 10) Keep learning by visiting the Heroku Dev Center</h3>
+</div>
+<div id="step8">
+<h4>Step 8) Check out your changes</h4>
+<!-- link here -->
+</div>
+<h4>Step 9) Keep learning by visiting the <a href="http://devcenter.heroku.com/tags/java">Heroku Dev Center</a></h4>
 </div>
 </div>
