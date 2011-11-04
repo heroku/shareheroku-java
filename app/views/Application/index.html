@@ -1,0 +1,163 @@
+#{extends 'main.html' /}
+#{set title:'Get Started with Java on Heroku' /}
+#{set 'moreStyles'}
+<link rel="stylesheet" href="@{'/public/colorbox.css'}" />
+<style type="text/css" media="screen">
+input.blur {
+    color: #999;
+}
+</style>
+#{/set}
+#{set 'moreScripts'}
+<script type="text/javascript" src="@{'/public/javascripts/jquery.colorbox-min.js'}"></script>
+<script type="text/javascript" src="@{'/public/javascripts/jquery.hint.js'}"></script>
+<script type="text/javascript">
+
+    var apps = [{name: "Spring MVC & Hibernate", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "maven"},
+        {name: "Simple Web App", demoUrl: "", sourceUrl: "", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
+        {name: "Simple Play! App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "play"},
+        {name: "Simple Play! + Scala App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "play+scala"},
+        {name: "Java + Redis Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "maven"},
+        {name: "Java + JDBC Web App", demoUrl: "", sourceUrl: "", gitUrl:"", buildTool: "maven"},
+        {name: "Scala/SBT Finagle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "sbt"},
+        {name: "Scala + Akka", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "sbt"},
+        {name: "Java/Gradle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "gradle"},
+        {name: "Grails Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "grails"}
+    ];
+
+    var selectedApp;
+
+    $(function() {
+        $('#shareAppButton').click(function() {
+
+            var gitUrl;
+            var selectedAppName = $("input[name=app]:checked").val();
+
+            if (selectedAppName == $("#customGitUrlRadio").val()) {
+                selectedApp = {name: selectedAppName, demoUrl: "", sourceUrl: "", gitUrl: $("#customGitUrl").val(), buildTool: ""};
+            }
+            else {
+                $.each(apps, function(index, value) {
+                    if (selectedAppName == value.name) {
+                        selectedApp = value;
+                    }
+                });
+            }
+
+            if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
+                $.post("/", {emailAddress: $('#emailAddress').val(), gitUrl: selectedApp.gitUrl}, function(data) {
+                    window.alert("App created! " + data.result.httpUrl);
+                });
+                //todo: error handler
+            }
+        });
+
+        $.each(apps, function(index, value) {
+            if (value.gitUrl != "") {
+                $("#apps").prepend('<label><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)<br/>');
+            }
+        });
+
+        $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:480});
+
+        $('#emailAddress').hint();
+        $('#customGitUrl').hint();
+
+        $("input[name=app]").change(function () {
+            checkCustomGitUrlVisible();
+        });
+
+        checkCustomGitUrlVisible();
+    });
+
+    function checkCustomGitUrlVisible() {
+        if ($("#customGitUrlRadio").attr("checked")) {
+            $("#customGitUrl").show();
+        }
+        else {
+            $("#customGitUrl").hide();
+        }
+    }
+
+</script>
+#{/set}
+
+<h1>Get started with Java on Heroku!</h1>
+
+<div style="max-width: 660px">
+<p>
+<h3>Step 1) Pick an app to start with:</h3>
+<div id="apps">
+    <label><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/>
+</div>
+</p>
+<p>
+<h3>Step 2) Enter your email address and clone the app:</h3>
+<input id="emailAddress" type="text" title="foo@bar.com"/>
+<button id="shareAppButton">Go!</button><br/>
+<div id="errors" style="color: #ff0000">
+
+</div>
+<br/>
+<div style="background-color: #dddddd">
+<p style="color: #ff0000">Show a progress bar here once the button is clicked and disappear when the app is created</p>
+<p style="color: #ff0000">This area will show up once the button is clicked</p>
+Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been actived before proceeding.  While your app is being created watch this quick intro to Java on Heroku:<br/>
+
+<h4><a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Java on Heroku Video</a></h4>
+</div>
+</p>
+<div style="background-color: #dddddd">
+<p style="color: #ff0000">This area will show up once the app is created</p>
+
+<p>
+<h3>Step 3) Check out your app:</h3>
+
+    <a href="http://asdf-asdf-1234.herokuapp.com">http://asdf-asdf-1234.herokuapp.com</a> <p style="color: #ff0000">This URL will come from the results of app creation</p>
+
+</p>
+<p>
+<h3>Step 4) Setup your environment:</h3>
+
+<h4>a) Install git (used to transfer the app to/from Heroku)</h4>
+
+<h4>b) Install the Heroku command line client (Windows, Mac, Linux)</h4>
+
+<p style="color: #ff0000">This instruction will be dependent on the build tool used by the selected app</p>
+<h4>c) Install Maven </h4>
+</p>
+<p>
+<h3>Step 5) Login to Heroku from the command line:</h3>
+
+    <p style="background-color: #eeeeee; margin-left: 30px">
+    heroku login
+    </p>
+
+This should also setup an SSH key and pair it with your Hekoku account.
+</p>
+<p>
+<h3>Step 6) Copy the app from Heroku to your local machine:</h3>
+    <p style="background-color: #eeeeee; margin-left: 30px">
+    git clone git@heroku.com/adsf-asdf-1234.git
+    </p>
+</p>
+<p>
+<h3>Step 7) Makes some changes to the app.</h3>
+</p>
+<p>
+<h3>Step 8) Make sure the app still compiles locally:</h3>
+    <p style="background-color: #eeeeee; margin-left: 30px">
+    mvn package
+    </p>
+</p>
+<p>
+<h3>Step 9) Add the changes to git, commit them, and push the changes to Heroku:</h3>
+    <p style="background-color: #eeeeee; margin-left: 30px">
+    git add .
+    git commit -m "changed something"
+    git push heroku master
+    </p>
+</p>
+<h3>Step 10) Keep learning by visiting the Heroku Dev Center</h3>
+</div>
+</div>

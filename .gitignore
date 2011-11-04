@@ -1,0 +1,6 @@
+/lib
+/modules
+/tmp
+/*.iml
+/out
+/.idea
