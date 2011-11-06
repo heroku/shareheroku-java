@@ -14,6 +14,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.*;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryBuilder;
+import play.jobs.Job;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,12 +23,20 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-public class HerokuAppSharingHelper {
+public class HerokuAppSharingHelper extends Job<AppMetadata> {
 
     private static final String SSH_KEY_COMMENT = "share@heroku";
+    
+    String emailAddress;
+    String gitUrl;
+    
+    public HerokuAppSharingHelper(String emailAddress, String gitUrl) {
+        this.emailAddress = emailAddress;
+        this.gitUrl = gitUrl;
+    }
 
-    public AppMetadata shareApp(String emailAddress, String gitUrl) {
-
+    @Override
+    public AppMetadata doJobWithResult() throws Exception {
         AppMetadata appMetadata = new AppMetadata();
 
         try {
@@ -176,5 +185,4 @@ public class HerokuAppSharingHelper {
             throw new RuntimeException(e);
         }
     }
-
 }

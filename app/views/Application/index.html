@@ -50,66 +50,12 @@ h5 {
 
     $(function() {
         $('#shareAppButton').click(function() {
+            submitForm();
+        });
 
-            var gitUrl;
-            var selectedAppName = $("input[name=app]:checked").val();
-
-            if (selectedAppName == $("#customGitUrlRadio").val()) {
-                selectedApp = {name: selectedAppName, demoUrl: "", sourceUrl: "", gitUrl: $("#customGitUrl").val(), buildTool: ""};
-            }
-            else {
-                $.each(apps, function(index, value) {
-                    if (selectedAppName == value.name) {
-                        selectedApp = value;
-                    }
-                });
-            }
-
-            if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
-                $('#createAppForm').children().attr("disabled", true);
-                $('#createAppForm').fadeTo("slow", 0.35);
-                $('#progressBar').show();
-                $('#creatingApp').show();
-
-
-                $.post("/", {emailAddress: $('#emailAddress').val(), gitUrl: selectedApp.gitUrl}, function(data) {
-                    if (data.result) {
-                        $('#createAppForm').children().attr("disabled", false);
-                        $('#createAppForm').hide();
-                        $('#progressBar').hide();
-                        $('#creatingApp').hide();
-                        $('#appReady').show();
-
-                        $('#step1').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
-                        $('#step8').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
-
-                        $('#step4').append('git clone -o heroku ' + data.result.gitUrl);
-
-                        if (selectedApp.buildTool != "")
-                        {
-                            $('#step2').append('<h5>c) ' + buildTools[selectedApp.buildTool].installInstructions + '</h5>');
-
-                            $('#step6').append('cd ' + data.result.name + '<br/>');
-
-                            $('#step6').append(buildTools[selectedApp.buildTool].buildInstruction);
-                        }
-                        else {
-                            $('#step6').hide();
-                        }
-                    }
-                    else if (data.error) {
-                        $.each(data.error, function(index, value) {
-                            $("#errors").append(value + "<br/>");
-                        });
-                    }
-                    else {
-                        window.alert("Unknown error occured");
-                    }
-                });
-                //todo: error handler
-            }
-            else {
-                // input error handler
+        $('#emailAddress').keyup(function(key) {
+            if (key.which == 13) {
+                submitForm();
             }
         });
 
@@ -163,6 +109,91 @@ h5 {
         else {
             $('#shareAppButton').attr("disabled", true);
         }
+    }
+
+    function submitForm() {
+        var gitUrl;
+        var selectedAppName = $("input[name=app]:checked").val();
+
+        if (selectedAppName == $("#customGitUrlRadio").val()) {
+            selectedApp = {name: selectedAppName, demoUrl: "", sourceUrl: "", gitUrl: $("#customGitUrl").val(), buildTool: ""};
+        }
+        else {
+            $.each(apps, function(index, value) {
+                if (selectedAppName == value.name) {
+                    selectedApp = value;
+                }
+            });
+        }
+
+        if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
+            $('#createAppForm').children().attr("disabled", true);
+            $('#createAppForm').fadeTo("slow", 0.35);
+            $('#progressBar').show();
+            $('#creatingApp').show();
+
+            $.ajax("/", {
+                type: 'POST',
+                data: {
+                    emailAddress: $('#emailAddress').val(),
+                    gitUrl: selectedApp.gitUrl
+                },
+                success: function(data, textStatus, jqXHR) {
+
+                    if (data.result) {
+                        $('#createAppForm').children().attr("disabled", false);
+                        $('#createAppForm').hide();
+                        $('#progressBar').hide();
+                        $('#creatingApp').hide();
+                        $('#appReady').show();
+
+                        $('#step1').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
+                        $('#step8').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
+
+                        $('#step4').append('git clone -o heroku ' + data.result.gitUrl);
+
+                        if (selectedApp.buildTool != "")
+                        {
+                            $('#step2').append('<h5>c) ' + buildTools[selectedApp.buildTool].installInstructions + '</h5>');
+
+                            $('#step6').append('cd ' + data.result.name + '<br/>');
+
+                            $('#step6').append(buildTools[selectedApp.buildTool].buildInstruction);
+                        }
+                        else {
+                            $('#step6').hide();
+                        }
+                    }
+                    else if (data.error) {
+                        reenableForm();
+
+                        $.each(data.error, function(index, value) {
+                            $("#errors").append(value + "<br/>");
+                        });
+                    }
+                    else {
+                        reenableForm();
+                        window.alert("Unknown error occured " + data);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    reenableForm();
+                    $("#errors").append(jqXHR);
+                }
+
+            });
+        }
+        else {
+            reenableForm();
+            $("#errors").append("Email address or app not specified properly");
+        }
+    }
+
+    function reenableForm() {
+        $('#createAppForm').children().attr("disabled", false);
+        $('#createAppForm').fadeTo("slow", 1);
+        $('#progressBar').hide();
+        $('#creatingApp').hide();
     }
 
     function validateEmail(email)
