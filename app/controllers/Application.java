@@ -39,7 +39,7 @@ public class Application extends Controller {
 
                 // force this connection to stay open
                 while (!promiseAppMetadata.isDone()) {
-                    Thread.sleep(1);
+                    Thread.sleep(1000);
                     response.writeChunk("");
                 }
 
