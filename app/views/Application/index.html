@@ -210,7 +210,7 @@ h5 {
 <div style="max-width: 660px">
 <div id="createAppForm">
 <h4>Step 1) Pick an app to start with:</h4>
-<div id="apps">
+<div id="apps" class="row">
     <label><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/>
 </div>
 <h4>Step 2) Clone the app and give access to:</h4>
@@ -222,27 +222,27 @@ h5 {
 </div>
 <img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 150px; left: 50px; position: absolute;"/>
 <br/>
-<div id="creatingApp" style="display: none;">
+<div id="creatingApp" style="display: none;" class="row">
 
 <b>Your app is being created!</b><br/>
 <br/>
 Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been activated before proceeding.  While your app is being created watch a quick <a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Intro to Java on Heroku Video</a>.<br/>
 </div>
-<div id="appReady" style="display: none;">
+<div id="appReady" style="display: none;" class="row">
 <h3>Your app is ready!</h3>
 <div id="step1">
 <h4>Step 1) Check out your app</h4>
 <!-- link here -->
 </div>
-<div id="step2">
-<h4>Step 2) Setup your environment</h4>
+<div id="step2" class="row">
+<h4 class="row">Step 2) Setup your environment</h4>
 
 <h5>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h5>
 
 <h5>b) Install the Heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a></h5>
 
 </div>
-<div>
+<div class="row" class="row">
 <h4>Step 3) Login to Heroku from the command line</h4>
 
     <p class="codeExample">
@@ -251,22 +251,22 @@ Shortly you will receive an email that a new app has been shared with you.  If y
 
 This should also setup an SSH key and pair it with your Hekoku account.
 </div>
-<div>
+<div class="row">
 <h4>Step 4) Copy the app from Heroku to your local machine</h4>
     <p id="step4" class="codeExample">
 
     </p>
 </div>
-<div>
+<div class="row">
 <h4>Step 5) Makes some changes to the app</h4>
 </div>
-<div>
+<div class="row">
 <h4>Step 6) Make sure the app still compiles locally</h4>
     <p id="step6" class="codeExample">
 
     </p>
 </div>
-<div>
+<div class="row">
 <h4>Step 7) Add the changes to git, commit them, and push the changes to Heroku</h4>
     <p class="codeExample">
     git add .<br/>
@@ -274,7 +274,7 @@ This should also setup an SSH key and pair it with your Hekoku account.
     git push heroku master<br/>
     </p>
 </div>
-<div id="step8">
+<div id="step8" class="row">
 <h4>Step 8) Check out your changes</h4>
 <!-- link here -->
 </div>
