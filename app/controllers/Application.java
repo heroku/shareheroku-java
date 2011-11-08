@@ -1,5 +1,7 @@
 package controllers;
 
+import com.dmurph.tracking.AnalyticsConfigData;
+import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
 import helpers.HerokuAppSharingHelper;
 import models.AppMetadata;
@@ -12,6 +14,8 @@ import play.mvc.results.RenderJson;
 import java.util.*;
 
 public class Application extends Controller {
+
+    private static final AnalyticsConfigData config = new AnalyticsConfigData("UA-26859570-1");
 
     public static void index() {
         render();
@@ -30,6 +34,8 @@ public class Application extends Controller {
             renderJSON(errors);
         }
         else {
+            JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
+            tracker.trackEvent("app", "shareApp", gitUrl);
             
             try {
                 F.Promise<AppMetadata> promiseAppMetadata = new HerokuAppSharingHelper(emailAddress, gitUrl).now();
@@ -54,13 +60,13 @@ public class Application extends Controller {
                 Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
                 errors.put("error", new HashMap<String, String>());
                 errors.get("error").put("shareApp", e.getMessage());
-                renderJSON(errors);
+                response.writeChunk(new Gson().toJson(errors));
             }
             catch (InterruptedException e) {
                 Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
                 errors.put("error", new HashMap<String, String>());
                 errors.get("error").put("shareApp", e.getMessage());
-                renderJSON(errors);
+                response.writeChunk(new Gson().toJson(errors));
             }
             
         }
