@@ -61,7 +61,7 @@ h5 {
 
         $.each(apps.reverse(), function(index, value) {
             if (value.gitUrl != "") {
-                $("#apps").prepend('<label><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)<br/>');
+                $("#apps").prepend('<div class="row"><label><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)</div>');
             }
         });
 
