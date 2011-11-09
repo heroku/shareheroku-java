@@ -37,13 +37,15 @@ h5 {
         {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
         {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
         {name: "Java/Gradle Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "gradle"},
-        {name: "Grails Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "grails"}
+        {name: "Grails Web App", demoUrl: "", sourceUrl: "", gitUrl: "", buildTool: "grails"},
+        {name: "Simple Clojure/Compojure Web App", demoUrl: "http://stark-water-4282.herokuapp.com/", sourceUrl: "https://github.com/metadaddy-sfdc/HelloClojureCompojure", gitUrl: "git://github.com/metadaddy-sfdc/HelloClojureCompojure.git", buildTool: "compojure"}
     ];
 
     var buildTools = {
         maven: {installInstructions: 'Install <a href="http://maven.apache.org/download.html">Maven</a>', buildInstruction: "mvn package"},
         sbt: {installInstructions: 'Install <a href="https://github.com/harrah/xsbt/wiki/Getting-Started-Setup">SBT</a>', buildInstruction: "sbt stage"},
-        play: {installInstructions: 'Install <a href="http://www.playframework.org/download">Play!</a>', buildInstruction: "play run --%prod"}
+        play: {installInstructions: 'Install <a href="http://www.playframework.org/download">Play!</a>', buildInstruction: "play run --%prod"},
+        compojure: {installInstructions: 'Install <a href="https://github.com/weavejester/compojure">Compojure</a> and <a href="https://github.com/technomancy/leiningen">Leiningen</a>', buildInstruction: "lein run"}
     };
 
     var selectedApp;
