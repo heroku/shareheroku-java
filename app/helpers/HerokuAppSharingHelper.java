@@ -29,7 +29,9 @@ public class HerokuAppSharingHelper extends Job<AppMetadata> {
     
     String emailAddress;
     String gitUrl;
-    
+
+    public Throwable exception;
+
     public HerokuAppSharingHelper(String emailAddress, String gitUrl) {
         this.emailAddress = emailAddress;
         this.gitUrl = gitUrl;
@@ -184,5 +186,10 @@ public class HerokuAppSharingHelper extends Job<AppMetadata> {
         } catch (JSchException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onException(Throwable e) {
+        this.exception = e;
     }
 }

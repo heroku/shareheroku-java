@@ -20,6 +20,11 @@ h5 {
     margin-left: 20px;
     font-size: 8pt;
 }
+label.app {
+    width: auto;
+    float: none;
+    font-size: 16px;
+}
 </style>
 #{/set}
 #{set 'moreScripts'}
@@ -63,7 +68,7 @@ h5 {
 
         $.each(apps.reverse(), function(index, value) {
             if (value.gitUrl != "") {
-                $("#apps").prepend('<div class="row"><label><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)</div>');
+                $("#apps").prepend('<div class="row"><label class="app"><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)</div>');
             }
         });
 
@@ -221,10 +226,13 @@ h5 {
 
 <div style="max-width: 660px">
 <div id="createAppForm">
+<div class="row">
 <h4>Step 1) Pick an app to start with:</h4>
-<div id="apps" class="row">
-    <label><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/>
+<div id="apps" style="margin-left: 30px">
+    <div class="row"><label class="app"><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/></div>
 </div>
+</div>
+<div class="row">
 <h4>Step 2) Clone the app and give access to:</h4>
 <input id="emailAddress" type="text" title="foo@bar.com" class="required email"/>
 <button id="shareAppButton">Go!</button><br/>
@@ -232,7 +240,8 @@ h5 {
 <div id="errors" style="color: #ff0000">
 </div>
 </div>
-<img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 150px; left: 50px; position: absolute;"/>
+</div>
+<img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 150px; left: 200px; position: absolute;"/>
 <br/>
 <div id="creatingApp" style="display: none;" class="row">
 
@@ -240,14 +249,16 @@ h5 {
 <br/>
 Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been activated before proceeding.  While your app is being created watch a quick <a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Intro to Java on Heroku Video</a>.<br/>
 </div>
-<div id="appReady" style="display: none;" class="row">
+<div id="appReady" style="display: none;">
+<div class="row">
 <h3>Your app is ready!</h3>
 <div id="step1">
 <h4>Step 1) Check out your app</h4>
 <!-- link here -->
 </div>
+</div>
 <div id="step2" class="row">
-<h4 class="row">Step 2) Setup your environment</h4>
+<h4>Step 2) Setup your environment</h4>
 
 <h5>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h5>
 
@@ -290,6 +301,8 @@ This should also setup an SSH key and pair it with your Hekoku account.
 <h4>Step 8) Check out your changes</h4>
 <!-- link here -->
 </div>
+<div class="row">
 <h4>Step 9) Keep learning by visiting the <a href="http://devcenter.heroku.com/tags/java">Heroku Dev Center</a></h4>
+</div>
 </div>
 </div>
