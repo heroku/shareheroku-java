@@ -3,15 +3,15 @@ package controllers;
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
+import com.heroku.api.model.App;
+import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
-import models.AppMetadata;
-import play.*;
-import play.jobs.Job;
 import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
-import play.mvc.results.RenderJson;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 public class Application extends Controller {
@@ -43,7 +43,7 @@ public class Application extends Controller {
 
             try {
                 HerokuAppSharingHelper job = new HerokuAppSharingHelper(emailAddress, gitUrl);
-                F.Promise<AppMetadata> promiseAppMetadata = job.now();
+                F.Promise<App> promiseAppMetadata = job.now();
 
                 String encoding = Http.Response.current().encoding;
                 response.setContentTypeIfNotSet("application/json; charset=" + encoding);
@@ -54,19 +54,26 @@ public class Application extends Controller {
                     response.writeChunk("");
                 }
 
-                AppMetadata appMetadata = await(promiseAppMetadata);
+                App app = await(promiseAppMetadata);
 
                 if (job.exception != null) {
                     throw job.exception;
                 }
                 
-                Map<String, AppMetadata> result = new HashMap<String, AppMetadata>();
-                result.put("result", appMetadata);
+                Map<String, App> result = new HashMap<String, App>();
+                result.put("result", app);
 
                 response.writeChunk(new Gson().toJson(result));
                 return;
             }
             catch (Throwable e) {
+
+                try {
+                    EmailHelper.sendEmailViaMailGun(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_USERNAME"), "App Error", e.getMessage() + "\n" + e.getStackTrace());
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
                 errors.get("error").put("shareApp", e.getMessage());
             }
 

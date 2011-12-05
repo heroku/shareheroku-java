@@ -154,10 +154,10 @@ label.app {
                         $('#creatingApp').hide();
                         $('#appReady').show();
 
-                        $('#step1').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
-                        $('#step8').append('<a href="'+ data.result.httpUrl + '">' + data.result.httpUrl + '</a>');
+                        $('#step1').append('<a href="'+ data.result.web_url + '">' + data.result.web_url + '</a>');
+                        $('#step8').append('<a href="'+ data.result.web_url + '">' + data.result.web_url + '</a>');
 
-                        $('#step4').append('git clone -o heroku ' + data.result.gitUrl);
+                        $('#step4').append('git clone -o heroku ' + data.result.git_url);
 
                         if (selectedApp.buildTool != "")
                         {
@@ -222,9 +222,7 @@ label.app {
 </script>
 #{/set}
 
-<h1>Get started with Java on Heroku!</h1>
-
-<div style="max-width: 660px">
+<div style="max-width: 660px; padding-top: 40px">
 <div id="createAppForm">
 <div class="row">
 <h4>Step 1) Pick an app to start with:</h4>

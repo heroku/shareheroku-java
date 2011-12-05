@@ -1,13 +1,19 @@
 package helpers;
 
-import com.heroku.api.HerokuStack;
-import com.heroku.api.command.*;
-import com.heroku.api.connection.HerokuBasicAuthConnectionProvider;
-import com.heroku.api.connection.HerokuConnection;
+import com.heroku.api.Heroku;
+import com.heroku.api.connection.HttpClientConnection;
+import com.heroku.api.model.App;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.key.KeyAdd;
+import com.heroku.api.request.key.KeyRemove;
+import com.heroku.api.request.login.BasicAuthLogin;
+import com.heroku.api.request.sharing.SharingAdd;
+import com.heroku.api.request.sharing.SharingRemove;
+import com.heroku.api.request.sharing.SharingTransfer;
+import com.heroku.api.response.Unit;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
-import models.AppMetadata;
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -23,7 +29,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.UUID;
 
-public class HerokuAppSharingHelper extends Job<AppMetadata> {
+public class HerokuAppSharingHelper extends Job<App> {
 
     private static final String SSH_KEY_COMMENT = "share@heroku";
     
@@ -38,28 +44,19 @@ public class HerokuAppSharingHelper extends Job<AppMetadata> {
     }
 
     @Override
-    public AppMetadata doJobWithResult() throws Exception {
-        AppMetadata appMetadata = new AppMetadata();
+    public App doJobWithResult() throws Exception {
+        App app = null;
 
         try {
-            HerokuConnection herokuConnection = new HerokuBasicAuthConnectionProvider(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")).getConnection();
-            HerokuCommandConfig config = new HerokuCommandConfig().onStack(HerokuStack.Cedar);
+            HttpClientConnection herokuConnection = new HttpClientConnection(new BasicAuthLogin(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")));
 
             // create an app on heroku (using heroku credentials specified in ${HEROKU_USERNAME} / ${HEROKU_PASSWORD}
-            HerokuCommand createCommand = new HerokuAppCreateCommand(config);
-            HerokuCommandResponse createCommandResponse = createCommand.execute(herokuConnection);
+            AppCreate cmd = new AppCreate(Heroku.Stack.Cedar);
+            app = herokuConnection.execute(cmd);
 
-            if (!createCommandResponse.isSuccess()) {
+            if (!app.getCreate_status().equals("complete")) {
                 throw new RuntimeException("Could not create the Heroku app");
             }
-
-            // git@heroku.com:growing-ice-6779.git
-            appMetadata.name = createCommandResponse.get("name").toString();
-            appMetadata.gitUrl = "git@heroku.com:" + createCommandResponse.get("name") + ".git";
-            appMetadata.httpUrl = "http://" + createCommandResponse.get("name") + ".herokuapp.com";
-
-            // set the app name in the config
-            config.app(appMetadata.name);
 
             // write the public key to a file
             String fakeUserHome = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
@@ -82,24 +79,12 @@ public class HerokuAppSharingHelper extends Job<AppMetadata> {
             FileUtils.copyFileToDirectory(knownHostsFile, fakeUserHomeSshDir);
 
             // add the key pair to ${HEROKU_USERNAME}
-            config.set(HerokuRequestKey.sshkey, sshPublicKey);
-            HerokuCommand keysAddCommand = new HerokuKeysAddCommand(config);
-            HerokuCommandResponse keysAddCommandResponse = keysAddCommand.execute(herokuConnection);
+            KeyAdd keyAdd = new KeyAdd(sshPublicKey);
+            Unit keyAddResponse = herokuConnection.execute(keyAdd);
 
-            if (!keysAddCommandResponse.isSuccess()) {
+            if (keyAddResponse == null) {
                 throw new RuntimeException("Could not add an ssh key to the user");
             }
-
-            // add the SOURCE_REPO env var
-            // add GIT_URL env var
-            //config.set(HerokuRequestKey.configvars, "{\"SOURCE_REPO\":\"" + System.getenv("SOURCE_REPO") + "\", \"GIT_URL\":\"" + appGitUrl + "\"}");
-
-            //HerokuCommand configAddCommand = new HerokuConfigAddCommand(config);
-            //HerokuCommandResponse configAddCommandResponse = configAddCommand.execute(herokuConnection);
-
-            //if (!configAddCommandResponse.isSuccess()) {
-            //    throw new RuntimeException("Could not configure the env vars");
-            //}
 
             URI sourceRepoUri = new URI(gitUrl);
 
@@ -124,48 +109,44 @@ public class HerokuAppSharingHelper extends Job<AppMetadata> {
             // git push the heroku repo
 
             gitRepo.getRepository().getFS().setUserHome(new File(fakeUserHome));
-            gitRepo.push().setRemote(appMetadata.gitUrl).call();
+            gitRepo.push().setRemote(app.getGit_url()).call();
 
             // share the app with the provided email
-            config.set(HerokuRequestKey.collaborator, emailAddress);
-            HerokuCommand sharingAddCommand = new HerokuSharingAddCommand(config);
-            HerokuCommandResponse sharingAddCommandResponse = sharingAddCommand.execute(herokuConnection);
+            SharingAdd sharingAdd = new SharingAdd(app.getName(), emailAddress);
+            Unit sharingAddResponse = herokuConnection.execute(sharingAdd);
 
-            if (!sharingAddCommandResponse.isSuccess()) {
+            if (sharingAddResponse == null) {
                 throw new RuntimeException("Could not add " + emailAddress + " as a collaborator");
             }
 
             // transfer the app to the provided email
-            config.set(HerokuRequestKey.transferOwner, emailAddress);
-            HerokuCommand sharingTransferCommand = new HerokuSharingTransferCommand(config);
-            HerokuCommandResponse sharingTransferCommandResponse = sharingTransferCommand.execute(herokuConnection);
+            SharingTransfer sharingTransfer = new SharingTransfer(app.getName(), emailAddress);
+            Unit sharingTransferResponse = herokuConnection.execute(sharingTransfer);
 
-            if (!sharingTransferCommandResponse.isSuccess()) {
+            if (sharingTransferResponse == null) {
                 throw new RuntimeException("Could not transfer the app to " + emailAddress);
             }
 
             // remove ${HEROKU_USERNAME} as collaborator
-            config.set(HerokuRequestKey.collaborator, System.getenv("HEROKU_USERNAME"));
-            HerokuCommand sharingRemoveCommand = new HerokuSharingRemoveCommand(config);
-            HerokuCommandResponse sharingRemoveCommandResponse = sharingRemoveCommand.execute(herokuConnection);
+            SharingRemove sharingRemove = new SharingRemove(app.getName(), System.getenv("HEROKU_USERNAME"));
+            Unit sharingRemoveResponse = herokuConnection.execute(sharingRemove);
 
-            if (!sharingRemoveCommandResponse.isSuccess()) {
+            if (sharingRemoveResponse == null) {
                 throw new RuntimeException("Could remove " + System.getenv("HEROKU_USERNAME") + " from the app");
             }
 
             // remove the key pair from ${HEROKU_USERNAME}
-            config.set(HerokuRequestKey.name, SSH_KEY_COMMENT);
-            HerokuCommand keysRemoveCommand = new HerokuKeysRemoveCommand(config);
-            HerokuCommandResponse keysRemoveCommandResponse = keysRemoveCommand.execute(herokuConnection);
-
-            if (!keysRemoveCommandResponse.isSuccess()) {
+            KeyRemove keyRemove = new KeyRemove(SSH_KEY_COMMENT);
+            Unit keyRemoveResponse = herokuConnection.execute(keyRemove);
+            
+            if (keyRemoveResponse == null) {
                 throw new RuntimeException("Could not remove ssh key");
             }
 
             // cleanup the fakeUserHome
             new File(fakeUserHome).delete();
 
-            return appMetadata;
+            return app;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
