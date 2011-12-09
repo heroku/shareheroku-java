@@ -10,6 +10,8 @@ import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -69,7 +71,10 @@ public class Application extends Controller {
             catch (Throwable e) {
 
                 try {
-                    EmailHelper.sendEmailViaMailGun(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_USERNAME"), "App Error", e.getMessage() + "\n" + e.getStackTrace());
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    EmailHelper.sendEmailViaMailGun(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_USERNAME"), "App Error: " + request.host, e.getMessage() + "\r\n" + sw.toString());
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
