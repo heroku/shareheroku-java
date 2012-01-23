@@ -1,7 +1,7 @@
 # Application dependencies
 
 require:
-    - play
+    - play 1.2.4
     - org.eclipse.jgit -> org.eclipse.jgit 1.1.0.201109151100-r
     - com.dmurph -> JGoogleAnalyticsTracker 1.2.0
     - com.heroku.api -> heroku-api 0.1-SNAPSHOT
