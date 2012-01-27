@@ -1,15 +1,12 @@
 # Application dependencies
 
 require:
-    - play
+    - play 1.2.4
     - org.eclipse.jgit -> org.eclipse.jgit 1.1.0.201109151100-r
     - com.dmurph -> JGoogleAnalyticsTracker 1.2.0
-    - com.heroku.api -> heroku-api 0.1-SNAPSHOT
-    - com.heroku.api -> heroku-json-jackson 0.1-SNAPSHOT
-    - com.heroku.api -> heroku-http-apache 0.1-SNAPSHOT
-    - org.apache.httpcomponents -> httpclient 4.1.2
-    - org.codehaus.jackson -> jackson-mapper-asl 1.9.2
-    - org.codehaus.jackson -> jackson-core-asl 1.9.2
+    - com.heroku.api -> heroku-api 0.2
+    - com.heroku.api -> heroku-json-jackson 0.2
+    - com.heroku.api -> heroku-http-apache 0.2
 
 repositories:
     - jgit-repository:
@@ -17,8 +14,3 @@ repositories:
         root: http://download.eclipse.org/jgit/maven
         contains:
             - org.eclipse.jgit -> *
-    - localRepo:
-        type: local
-        artifact: ${application.path}/libs/[module]-[revision].jar
-        contains:
-            - com.heroku.api -> *
