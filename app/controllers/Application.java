@@ -3,7 +3,7 @@ package controllers;
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
-import com.heroku.api.model.App;
+import com.heroku.api.App;
 import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
 import play.libs.F;
@@ -12,8 +12,6 @@ import play.data.validation.Error;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 
 public class Application extends Controller {
