@@ -1,9 +1,9 @@
 package helpers;
 
 import com.heroku.api.Heroku;
+import com.heroku.api.HerokuAPI;
 import com.heroku.api.connection.HttpClientConnection;
-import com.heroku.api.model.App;
-import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.App;
 import com.heroku.api.request.key.KeyAdd;
 import com.heroku.api.request.key.KeyRemove;
 import com.heroku.api.request.login.BasicAuthLogin;
@@ -49,12 +49,11 @@ public class HerokuAppSharingHelper extends Job<App> {
 
         try {
             HttpClientConnection herokuConnection = new HttpClientConnection(new BasicAuthLogin(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")));
-
+            HerokuAPI herokuAPI = new HerokuAPI(herokuConnection);
             // create an app on heroku (using heroku credentials specified in ${HEROKU_USERNAME} / ${HEROKU_PASSWORD}
-            AppCreate cmd = new AppCreate(Heroku.Stack.Cedar);
-            app = herokuConnection.execute(cmd);
+            app = herokuAPI.createApp(new App().on(Heroku.Stack.Cedar));
 
-            if (!app.getCreate_status().equals("complete")) {
+            if (!app.getCreateStatus().equals("complete")) {
                 throw new RuntimeException("Could not create the Heroku app");
             }
 
@@ -109,7 +108,7 @@ public class HerokuAppSharingHelper extends Job<App> {
             // git push the heroku repo
 
             gitRepo.getRepository().getFS().setUserHome(new File(fakeUserHome));
-            gitRepo.push().setRemote(app.getGit_url()).call();
+            gitRepo.push().setRemote(app.getGitUrl()).call();
 
             // share the app with the provided email
             SharingAdd sharingAdd = new SharingAdd(app.getName(), emailAddress);
