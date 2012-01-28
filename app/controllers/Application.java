@@ -6,6 +6,8 @@ import com.google.gson.Gson;
 import com.heroku.api.App;
 import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
+import models.AppTemplate;
+import models.Tag;
 import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
@@ -19,7 +21,13 @@ public class Application extends Controller {
     private static final AnalyticsConfigData config = new AnalyticsConfigData("UA-26859570-1");
 
     public static void index() {
-        render();
+        if (request.format.equals("json")) {
+            List<AppTemplate> appTemplates = AppTemplate.findAll();
+            renderJSON(appTemplates);
+        }
+        else {
+            render();
+        }
     }
 
     public static void shareApp(String emailAddress, String gitUrl) {
@@ -85,6 +93,50 @@ public class Application extends Controller {
             }
             
         }
+    }
+    
+    public static void search(String query) {
+        if (request.format.equals("json")) {
+            List<AppTemplate> appTemplates = AppTemplate.find("(UPPER(title) like UPPER(?) or UPPER(description) like UPPER(?)) and status = ?", "%" + query + "%", "%" + query + "%", AppTemplate.Status.PUBLISHED).fetch();
+            renderJSON(appTemplates);
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void tag(String tagId) {
+        if (request.format.equals("json")) {
+            List<AppTemplate> appTemplates = AppTemplate.find("select a from AppTemplate a inner join a.tags t where UPPER(t.tagId) = UPPER(?)", tagId).fetch();
+            renderJSON(appTemplates);
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void app(String appId) {
+        if (request.format.equals("json")) {
+            AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
+            renderJSON(appTemplate);
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void tags() {
+        if (request.format.equals("json")) {
+            List<Tag> tags = Tag.findAll();
+            renderJSON(tags);
+        }
+        else {
+            error("Only requests that accept json are supported");
+        }
+
     }
 
 }

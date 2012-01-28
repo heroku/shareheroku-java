@@ -5,7 +5,16 @@
 # Home page
 GET     /                                       Application.index
 
-POST    /                                       Application.shareApp
+POST    /shareApp                               Application.shareApp
+
+GET     /search/{query}                         Application.search
+
+GET     /tag/{tagId}                            Application.tag
+
+GET     /tags                                   Application.tags
+
+GET     /app/{appId}                            Application.app
+
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
@@ -14,4 +23,4 @@ GET     /favicon.ico                            404
 GET     /public/                                staticDir:public
 
 # Catch all
-*       /{controller}/{action}                  {controller}.{action}
+#*       /{controller}/{action}                  {controller}.{action}

@@ -1,0 +1,77 @@
+models.Tag(java):
+    tagId:  java
+    name:   Java
+
+models.Tag(maven):
+    tagId:  maven
+    name:   Maven
+
+models.Tag(tomcat):
+    tagId:  tomcat
+    name:   Apache Tomcat
+
+models.Tag(war):
+    tagId:  war
+    name:   WAR
+
+models.Tag(containerless):
+    tagId:  containerless
+    name:   Containerless
+
+models.AppTemplate(java_maven_tomcat_war):
+    appId:            java_maven_tomcat_war
+    title:            Java with Maven, Tomcat, and WAR packaging
+    demoUrl:          http://java-webapp-template.herokuapp.com
+    sourceUrl:        https://github.com/jamesward/java-webapp-template
+    gitUrl:           git://github.com/jamesward/java-webapp-template.git
+    documentationUrl: https://github.com/jamesward/java-webapp-template/ARTICLE.md
+    instructionsUrl:  https://github.com/jamesward/java-webapp-template/README.md
+    tags:
+                      - java
+                      - maven
+                      - tomcat
+                      - war
+    status:           PUBLISHED
+    description:      >
+                      A simple Java web application that uses the Maven build tool.  Tomcat Runner is used to run the
+                      application.  Standard WAR structure and packaging is used.
+
+models.AppTemplate(java_maven_tomcat_containerless):
+    appId:            java_maven_tomcat_containerless
+    title:            Java with Maven and Containerless Tomcat
+    demoUrl:          http://falling-journey-9776.herokuapp.com
+    sourceUrl:        https://github.com/heroku/devcenter-embedded-tomcat
+    gitUrl:           git://github.com/heroku/devcenter-embedded-tomcat.git
+    documentationUrl: https://github.com/heroku/devcenter-embedded-tomcat/ARTICLE.md
+    instructionsUrl:  https://github.com/heroku/devcenter-embedded-tomcat/README.md
+    tags:
+                      - java
+                      - maven
+                      - tomcat
+                      - containerless
+    status:           PUBLISHED
+    description:      >
+                      A simple Java web application that uses the Maven build tool.  Embedded Tomcat is used to run the
+                      application.  The application is packaged as a JAR so that it can be run containerless.
+
+
+##
+##    var apps = [
+##            {name: "Simple Java Web App with Maven and Tomcat", demoUrl: "http://java-webapp-template.herokuapp.com/", sourceUrl: "https://github.com/jamesward/java-webapp-template", gitUrl: "git://github.com/jamesward/java-webapp-template.git", buildTool: "maven"},
+##            {name: "Simple Java Web App with Maven and Containerless Tomcat", demoUrl: "http://falling-journey-9776.herokuapp.com/", sourceUrl: "https://github.com/heroku/devcenter-embedded-tomcat", gitUrl: "git://github.com/heroku/devcenter-embedded-tomcat.git", buildTool: "maven"},
+##            {name: "Simple Java Web App with Maven and Containerless Jetty", demoUrl: "http://glowing-autumn-4004.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellojavaheroku", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
+##            {name: "Simple Play! + Java App (v. 1.2.3)", demoUrl: "http://warm-samurai-6100.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplay", gitUrl: "git://github.com/jamesward/helloplay.git", buildTool: "play"},
+##            {name: "Simple Play! + Scala App (v. 1.2.3)", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play"},
+##            {name: "Spring MVC & Hibernate (Spring Roo petclinic)", demoUrl: "http://floating-samurai-9174.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellospringroo", gitUrl: "git://github.com/jamesward/hellospringroo.git", buildTool: "maven"},
+##            {name: "Java + WebSolr Add-on", demoUrl: "http://websolr-java.herokuapp.com/", sourceUrl: "https://github.com/anandbn/websolr-java", gitUrl: "git://github.com/anandbn/websolr-java.git", buildTool: "maven"},
+##            {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
+##            {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
+##            {name: "Simple Clojure/Compojure Web App", demoUrl: "http://stark-water-4282.herokuapp.com/", sourceUrl: "https://github.com/metadaddy-sfdc/HelloClojureCompojure", gitUrl: "git://github.com/metadaddy-sfdc/HelloClojureCompojure.git", buildTool: "compojure"}
+##        ];
+##
+##        var buildTools = {
+##            maven: {installInstructions: 'Install <a href="http://maven.apache.org/download.html">Maven</a>', buildInstruction: "mvn package"},
+##            sbt: {installInstructions: 'Install <a href="https://github.com/harrah/xsbt/wiki/Getting-Started-Setup">SBT</a>', buildInstruction: "sbt stage"},
+##            play: {installInstructions: 'Install <a href="http://www.playframework.org/download">Play!</a>', buildInstruction: "play run --%prod"},
+##            compojure: {installInstructions: 'Install <a href="https://github.com/weavejester/compojure">Compojure</a> and <a href="https://github.com/technomancy/leiningen">Leiningen</a>', buildInstruction: "lein run"}
+##        };
