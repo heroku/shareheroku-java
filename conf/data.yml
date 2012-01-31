@@ -76,6 +76,7 @@ models.AppTemplate(java_maven_tomcat_war):
                       - tomcat
                       - war
     status:           PUBLISHED
+    rating:           1
     description:      >
                       A simple Java web application that uses the Maven build tool.  Tomcat Runner is used to run the
                       application.  Standard WAR structure and packaging is used.
@@ -94,6 +95,7 @@ models.AppTemplate(java_maven_tomcat_containerless):
                       - tomcat
                       - containerless
     status:           PUBLISHED
+    rating:           2
     description:      >
                       A simple Java web application that uses the Maven build tool.  Embedded Tomcat is used to run the
                       application.  The application is packaged as a JAR so that it can be run containerless.
@@ -112,6 +114,7 @@ models.AppTemplate(java_maven_jetty_containerless):
                       - jetty
                       - containerless
     status:           PUBLISHED
+    rating:           3
     description:      >
                       A simple Java web application that uses the Maven build tool.  Embedded Jetty is used to run the
                       application.  The application is packaged as a JAR so that it can be run containerless.
@@ -129,6 +132,7 @@ models.AppTemplate(java_play_1_2):
                       - play-1_2
                       - containerless
     status:           PUBLISHED
+    rating:           4
     description:      >
                       Play Framework v. 1.2.3 application with Java.
 
@@ -145,6 +149,7 @@ models.AppTemplate(scala_play_1_2):
                       - play-1_2
                       - containerless
     status:           PUBLISHED
+    rating:           3
     description:      >
                       Play Framework v. 1.2.3 application with Scala.
 
@@ -162,6 +167,7 @@ models.AppTemplate(java_spring_roo_petclinic):
                       - jetty
                       - hibernate
     status:           PUBLISHED
+    rating:           5
     description:      >
                       A complete Spring MVC and Hibernate application built with Spring Roo.  This application uses war
                       packaging and Jetty Runner.
@@ -178,6 +184,7 @@ models.AppTemplate(java_websolr):
                       - java
                       - websolr
     status:           PUBLISHED
+    rating:           5
     description:      >
                       An example web application that uses the WebSolr Heroku add-on.
 
@@ -194,6 +201,7 @@ models.AppTemplate(scala_sbt_finagle):
                       - sbt
                       - finagle
     status:           PUBLISHED
+    rating:           4
     description:      >
                       An example Scala application that uses the Twitter Finagle and sbt.
 
@@ -210,6 +218,7 @@ models.AppTemplate(scala_sbt_akka_webwords):
                       - sbt
                       - akka
     status:           PUBLISHED
+    rating:           4
     description:      >
                       An complete application that uses Scala, Akka, and sbt.
 
@@ -225,5 +234,6 @@ models.AppTemplate(clojure_compojure):
                       - clojure
                       - compojure
     status:           PUBLISHED
+    rating:           5
     description:      >
                       An simple Clojure application using the Compojure web framework.

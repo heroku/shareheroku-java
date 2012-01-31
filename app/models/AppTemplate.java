@@ -50,6 +50,10 @@ public class AppTemplate extends Model {
     @ManyToMany
     public List<Tag> tags;
 
+    @Min(1)
+    @Max(5)
+    public int rating;
+    
     public Status status;
 
 

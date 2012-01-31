@@ -9,7 +9,7 @@ body {
 }
 
 .app-item {
-    height: 120px;
+    height: 130px;
     position: relative;
 }
 
@@ -19,9 +19,10 @@ body {
 
 .app-item h6 {
     margin-left: 10px;
-    margin-top: 10px;
+    margin-top: 6px;
     font-size: 40%;
     line-height: normal;
+    text-transform: none;
 }
 
 .app-item div {
@@ -29,4 +30,27 @@ body {
     bottom: 10px;
     width: 100%;
     text-align: center;
+}
+
+.app-details {
+    margin-left: 10px;
+}
+
+.app-actions {
+    text-align: right;
+    padding-right: 20px;
+    padding-top: 10px;
+}
+
+.app-actions h3 {
+    margin-top: 20px;
+}
+
+.app-actions input {
+    width: 150px;
+    margin-bottom: 2px;
+}
+
+.app-actions button {
+    width: 160px;
 }
