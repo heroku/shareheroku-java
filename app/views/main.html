@@ -4,28 +4,38 @@
 <head>
     <title>#{get 'title' /}</title>
     <meta charset="${_response_encoding}">
-    <link rel="stylesheet" media="screen" href="@{'/public/stylesheets/bootstrap.min.css'}" type="text/css"/>
     #{get 'moreStyles' /}
     <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}">
     <script src="@{'/public/javascripts/jquery-1.7.min.js'}" type="text/javascript" charset="${_response_encoding}"></script>
     #{get 'moreScripts' /}
 </head>
 <body>
-<div class="container">
-    <section id="navigation">
-        <div class="topbar-wrapper" style="z-index: 5;">
-            <div class="topbar" data-dropdown="dropdown">
-                <div class="topbar-inner">
-                    <div class="container">
-                        <h3><a href="/">#{get 'title' /}</a></h3>
-                    </div>
-                </div><!-- /topbar-inner -->
-            </div><!-- /topbar -->
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a id="titleLink" class="brand" href="/">#{get 'title' /}</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li class="active"><a id="allAppsLink" href="/">All Apps</a></li>
+                    <li><a href="#submit">Submit an App</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+            <form action="/search" class="form-search navbar-form pull-right" method="get">
+                <input id="searchText" class="search-query" type="text" placeholder="Search">
+                <button id="searchButton" class="btn" type="submit">Go</button>
+            </form>
         </div>
-    </section>
-    <div class="content">
-        #{doLayout /}
     </div>
 </div>
+<div class="container-fluid">
+    #{doLayout /}
+
+    <hr>
+
+    <footer>
+        <p>&copy; Heroku 2012</p>
+    </footer>
+
+</div><!--/.fluid-container-->
 </body>
 </html>

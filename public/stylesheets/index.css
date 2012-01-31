@@ -1,0 +1,22 @@
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+
+.app-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.app-item {
+    height: 100px;
+}
+
+.app-item h4 {
+    margin-left: 10px;
+}
+
+.centered {
+    margin-left:auto;
+    margin-right:auto;
+}
