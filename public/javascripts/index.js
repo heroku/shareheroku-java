@@ -91,7 +91,7 @@ function updatePage(location) {
 }
 
 function fetchApps() {
-    //$("#appTemplates").empty()
+    $("#appTemplates").empty()
     $("#app").empty()
 
     $.get(location.pathname, function(data) {
@@ -113,7 +113,21 @@ function fetchApps() {
                 var t = $("<div class='app-item thumbnail'></div>")
                 t.append("<h4>" + item.title + "</h4>")
 
-                t.append("<button class='btn large primary centered'>Get Details</button>")
+
+
+                var ts = ""
+                $.each(item.tags, function(tagIndex, tagItem) {
+                    ts += tagItem.name
+                    if (tagIndex != item.tags.length -1) {
+                        ts += ", "
+                    }
+                })
+
+                var tags = $("<h6>Tags: " + ts + "</h6>")
+
+                t.append(tags)
+
+                t.append("<div><button class='btn primary'>Get Details</button></div>")
 
                 s.append(t)
 

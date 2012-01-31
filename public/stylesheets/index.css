@@ -9,14 +9,24 @@ body {
 }
 
 .app-item {
-    height: 100px;
+    height: 120px;
+    position: relative;
 }
 
 .app-item h4 {
     margin-left: 10px;
 }
 
-.centered {
-    margin-left:auto;
-    margin-right:auto;
+.app-item h6 {
+    margin-left: 10px;
+    margin-top: 10px;
+    font-size: 40%;
+    line-height: normal;
+}
+
+.app-item div {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align: center;
 }
