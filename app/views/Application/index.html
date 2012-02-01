@@ -2,22 +2,21 @@
 #{set title:'The Heroku App Copier' /}
 
 #{set 'moreStyles'}
-<link rel="stylesheet/less" type="text/css" href="@{'/public/stylesheets/bootstrap.less'}">
-<link rel="stylesheet/less" type="text/css" href="@{'/public/stylesheets/responsive.less'}">
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/bootstrap.min.css'}">
+<link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/bootstrap.min.responsive'}">
 <link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/index.css'}">
 #{/set}
 
 #{set 'moreScripts'}
-<script src="@{'/public/javascripts/less-1.2.1.min.js'}" type="text/javascript"></script>
 <script src="@{'/public/javascripts/jquery.history.js'}" type="text/javascript"></script>
-<script src="@{'/public/javascripts/bootstrap-modal.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/bootstrap.min.js'}" type="text/javascript"></script>
 <script src="@{'/public/javascripts/index.js'}" type="text/javascript"></script>
 #{/set}
 
 <div class="row-fluid">
     <div class="span3">
         <div class="well sidebar-nav">
-            <ul id="tags" class="nav list">
+            <ul id="tags" class="nav nav-list">
                 <li class="nav-header">Tags</li>
             </ul>
         </div>

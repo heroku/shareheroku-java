@@ -49,6 +49,7 @@ function goToTag(event) {
 function goToSearch(event) {
     event.preventDefault()
     var q = $("#searchText").val()
+    $("#searchText").val("")
     History.pushState({query: q}, "Search: " + q, "/search/" + q)
 }
 
@@ -103,6 +104,10 @@ function fetchApps() {
 
             // tags or search
 
+            if (data.length == 0) {
+                $("#appTemplates").append("<div class='alert'><h4>Your query didn't match any apps</h4></div>")
+            }
+
             $.each(data, function(index, item) {
                 if (index % 3 == 0) {
                     $("#appTemplates").append("<div class='row-fluid app-row'></div>")
@@ -131,7 +136,7 @@ function fetchApps() {
                 var rating = $("<h6>Rating: " + getRating(item) + "</h6>")
                 t.append(rating)
 
-                t.append("<div><button id='appId-" + item.appId + "' class='btn primary'>Get Details</button></div>")
+                t.append("<div><button id='appId-" + item.appId + "' class='btn'>Get Details</button></div>")
 
                 s.append(t)
 
@@ -141,6 +146,8 @@ function fetchApps() {
             })
         }
         else if (!(typeof data.appId === undefined)) {
+
+            // individual app
 
             var t = $("<div class='thumbnail container-fluid'></div>")
 
@@ -170,15 +177,6 @@ function fetchApps() {
             row.append(rc)
 
             $("#appTemplates").append(t)
-
-
-
-                /*
-            <div id="app" class="span9 thumbnail">
-                <h3 id="appHeader"></h3>
-                <a class="btn primary" href="#">Deploy on Heroku</a>
-            </div>
-            */
         }
     }, "json")
 }
@@ -195,10 +193,10 @@ function getRating(appTemplate) {
     var rs = ""
     for (var i = 1; i <= 5; i++) {
         if (i <= appTemplate.rating) {
-            rs += '<a href="#"><i class="icon star"></i></a>'
+            rs += '<a href="#"><i class="icon-star"></i></a>'
         }
         else {
-            rs += '<a href="#"><i class="icon star-empty"></i></a>'
+            rs += '<a href="#"><i class="icon-star-empty"></i></a>'
         }
     }
 
