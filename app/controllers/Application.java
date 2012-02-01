@@ -8,6 +8,7 @@ import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
 import models.AppTemplate;
 import models.Tag;
+import play.db.jpa.GenericModel;
 import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
@@ -19,15 +20,89 @@ import java.util.*;
 public class Application extends Controller {
 
     private static final AnalyticsConfigData config = new AnalyticsConfigData("UA-26859570-1");
+    private static final String DEFAULT_SORT = "a.rating";
+    private static final String BASE_APPTEMPLATE_SELECT = "SELECT a FROM AppTemplate a";
+
+    private static String getOrderBy() {
+
+        String sort = request.params.get("sort");
+
+        if (sort == null) {
+            sort = DEFAULT_SORT;
+        } else if (sort.equals("rating")) {
+            sort = "a.rating DESC";
+        } else if (sort.equals("title")) {
+            sort = "a.title ASC";
+        } else if (sort.equals("lastUpdated")) {
+            sort = "a.lastUpdated ASC";
+        }
+
+        return "ORDER BY " + sort;
+    }
+    
+    private static List<AppTemplate> fetchAppTemplates(GenericModel.JPAQuery jpaQuery) {
+        String limit = request.params.get("limit");
+
+        if (limit != null) {
+            return jpaQuery.fetch(Integer.parseInt(limit));
+        }
+        else {
+            return jpaQuery.fetch();
+        }
+    }
 
     public static void index() {
         if (request.format.equals("json")) {
-            List<AppTemplate> appTemplates = AppTemplate.findAll();
-            renderJSON(appTemplates);
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " WHERE a.status = ? " + getOrderBy(), AppTemplate.Status.PUBLISHED);
+            renderJSON(fetchAppTemplates(jpaQuery));
         }
         else {
             render();
         }
+    }
+    
+    public static void search(String query) {
+        if (request.format.equals("json")) {
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " WHERE (UPPER(a.title) like UPPER(?) or UPPER(a.description) like UPPER(?)) and status = ? " + getOrderBy(), "%" + query + "%", "%" + query + "%", AppTemplate.Status.PUBLISHED);
+            renderJSON(fetchAppTemplates(jpaQuery));
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void tag(String tagId) {
+        if (request.format.equals("json")) {
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " INNER JOIN a.tags t WHERE UPPER(t.tagId) = UPPER(?) " + getOrderBy(), tagId);
+            renderJSON(fetchAppTemplates(jpaQuery));
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void app(String appId) {
+        if (request.format.equals("json")) {
+            AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
+            renderJSON(appTemplate);
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+
+    }
+
+    public static void tags() {
+        if (request.format.equals("json")) {
+            List<Tag> tags = Tag.findAll();
+            renderJSON(tags);
+        }
+        else {
+            error("Only requests that accept json are supported");
+        }
+
     }
 
     public static void shareApp(String emailAddress, String gitUrl) {
@@ -67,7 +142,7 @@ public class Application extends Controller {
                 if (job.exception != null) {
                     throw job.exception;
                 }
-                
+
                 Map<String, App> result = new HashMap<String, App>();
                 result.put("result", app);
 
@@ -91,52 +166,8 @@ public class Application extends Controller {
             if (errors.get("error") != null) {
                 response.writeChunk(new Gson().toJson(errors));
             }
-            
-        }
-    }
-    
-    public static void search(String query) {
-        if (request.format.equals("json")) {
-            List<AppTemplate> appTemplates = AppTemplate.find("(UPPER(title) like UPPER(?) or UPPER(description) like UPPER(?)) and status = ?", "%" + query + "%", "%" + query + "%", AppTemplate.Status.PUBLISHED).fetch();
-            renderJSON(appTemplates);
-        }
-        else {
-            renderTemplate("Application/index.html");
-        }
 
-    }
-
-    public static void tag(String tagId) {
-        if (request.format.equals("json")) {
-            List<AppTemplate> appTemplates = AppTemplate.find("select a from AppTemplate a inner join a.tags t where UPPER(t.tagId) = UPPER(?)", tagId).fetch();
-            renderJSON(appTemplates);
         }
-        else {
-            renderTemplate("Application/index.html");
-        }
-
-    }
-
-    public static void app(String appId) {
-        if (request.format.equals("json")) {
-            AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
-            renderJSON(appTemplate);
-        }
-        else {
-            renderTemplate("Application/index.html");
-        }
-
-    }
-
-    public static void tags() {
-        if (request.format.equals("json")) {
-            List<Tag> tags = Tag.findAll();
-            renderJSON(tags);
-        }
-        else {
-            error("Only requests that accept json are supported");
-        }
-
     }
 
 }

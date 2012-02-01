@@ -99,7 +99,7 @@ function updatePage(location) {
 function fetchApps() {
     $("#appTemplates").empty()
 
-    $.get(location.pathname, function(data) {
+    $.get(location.pathname + location.search, function(data) {
         if ($.isArray(data)) {
 
             // tags or search

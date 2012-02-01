@@ -5,11 +5,18 @@ import play.db.jpa.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 public class AppTemplate extends Model {
 
+    public AppTemplate() {
+        rating = 1;
+        lastUpdated = new Date();
+        status = Status.PENDING;
+    }
+    
     @Required
     @Unique
     @MinSize(3)
@@ -55,6 +62,8 @@ public class AppTemplate extends Model {
     public int rating;
     
     public Status status;
+    
+    public Date lastUpdated;
 
 
     public static enum Status {
