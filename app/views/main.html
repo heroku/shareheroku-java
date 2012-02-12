@@ -17,25 +17,17 @@
             <div class="nav-collapse">
                 <ul class="nav">
                     <li class="active"><a id="allAppsLink" href="/">All Apps</a></li>
-                    <li><a href="#submit">Submit an App</a></li>
+                    <li><a id="submitLink" href="/submit">Submit an App</a></li>
                 </ul>
             </div><!--/.nav-collapse -->
-            <form action="/search" class="form-search navbar-form pull-right" method="get">
-                <input id="searchText" class="search-query" type="text" placeholder="Search">
-                <button id="searchButton" class="btn" type="submit">Go</button>
+            <form id="searchForm" action="/search" class="form-search navbar-form pull-right" method="get">
+                <input id="searchText" name="query" class="search-query" type="text" placeholder="Search">
             </form>
         </div>
     </div>
 </div>
 <div class="container-fluid">
     #{doLayout /}
-
-    <hr>
-
-    <footer>
-        <p>&copy; Heroku 2012</p>
-    </footer>
-
 </div><!--/.fluid-container-->
 </body>
 </html>

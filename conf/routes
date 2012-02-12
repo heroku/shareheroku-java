@@ -9,6 +9,8 @@ POST    /shareApp                               Application.shareApp
 
 GET     /search/{query}                         Application.search
 
+GET     /search                                 Application.search
+
 GET     /tag/{tagId}                            Application.tag
 
 GET     /tags                                   Application.tags

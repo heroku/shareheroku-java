@@ -62,6 +62,10 @@ public class Application extends Controller {
     }
     
     public static void search(String query) {
+        if (query.length() == 0) {
+            index();
+        }
+
         if (request.format.equals("json")) {
             GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " WHERE (UPPER(a.title) like UPPER(?) or UPPER(a.description) like UPPER(?)) and status = ? " + getOrderBy(), "%" + query + "%", "%" + query + "%", AppTemplate.Status.PUBLISHED);
             renderJSON(fetchAppTemplates(jpaQuery));

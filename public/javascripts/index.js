@@ -1,10 +1,14 @@
 $(function() {
 
     $("#titleLink").bind('click', goToHome)
+        
     $("#allAppsLink").bind('click', goToHome)
 
-    $("#searchText").bind('enter', goToSearch)
-    $("#searchButton").bind('click', goToSearch)
+    $("#submitLink").bind('click', goToSubmit)
+
+    $("#searchText").bind('keyup', goToSearch)
+
+    $("#searchForm").bind('submit', goToSearch)
 
     var History = window.History
 
@@ -16,29 +20,16 @@ $(function() {
     // check the url
     updatePage(window.location)
 
-    // fetch the tags
-    $.get("/tags", function(data) {
-        tags = data
-
-        $.each(data, function(index, item) {
-            var a = $("<a>" + item.name + "</a>")
-            a.attr("id", "tagId-" + item.tagId)
-            a.attr("href", "/tag/" + item.tagId)
-            if (History.enabled) {
-                a.bind('click', item, goToTag)
-            }
-            var li = $("<li/>")
-            li.append(a)
-            var li = $("#tags").append(li)
-        })
-        updateActiveTag()
-    }, "json")
-
 })
 
 function goToHome(event) {
     event.preventDefault()
     History.pushState({}, window.title, "/")
+}
+
+function goToSubmit(event) {
+    event.preventDefault()
+    History.pushState({}, window.title, "/submit")
 }
 
 function goToTag(event) {
@@ -47,10 +38,17 @@ function goToTag(event) {
 }
 
 function goToSearch(event) {
-    event.preventDefault()
+    if (event.type == "submit") {
+        event.preventDefault()
+    }
+
     var q = $("#searchText").val()
-    $("#searchText").val("")
-    History.pushState({query: q}, "Search: " + q, "/search/" + q)
+    if (q != "") {
+        History.pushState({query: q}, "Search: " + q, "/search/" + q)
+    }
+    else {
+        goToHome(event)
+    }
 }
 
 function goToApp(event) {
@@ -59,6 +57,8 @@ function goToApp(event) {
 }
 
 function updatePage(location) {
+
+    $("#mainContent").empty()
 
     // parse url
     // /search/{query}
@@ -74,7 +74,6 @@ function updatePage(location) {
     tagId = ""
 
     if (arr.length == 3) {
-
         if (arr[1] == "search") {
             query = arr[2]
         }
@@ -87,17 +86,28 @@ function updatePage(location) {
 
         $("#allAppsLink").parent().removeClass("active")
     }
+    else if (arr.length == 2) {
+        if (arr[1] == "submit") {
+            $("#submitLink").parent().addClass("active")
+
+
+
+            return
+        }
+
+        $("#allAppsLink").parent().removeClass("active")
+    }
     else {
         $("#allAppsLink").parent().addClass("active")
     }
 
-    updateActiveTag()
+    fetchTags()
 
     fetchApps()
 }
 
 function fetchApps() {
-    $("#appTemplates").empty()
+    $("#mainContent").append('<div id="appTemplates" class="span9"></div>')
 
     $.get(location.pathname + location.search, function(data) {
         if ($.isArray(data)) {
@@ -181,7 +191,33 @@ function fetchApps() {
     }, "json")
 }
 
-function updateActiveTag() {
+function fetchTags() {
+    // fetch the tags
+    if (tags.length == 0) {
+        $.get("/tags", renderTags, "json")
+    }
+    else {
+        renderTags(tags)
+    }
+}
+
+function renderTags(data) {
+    tags = data
+
+    $("#mainContent").prepend('<div class="span3"><div class="well sidebar-nav"><ul id="tags" class="nav nav-list"><li class="nav-header">Tags</li></ul></div></div>')
+
+    $.each(data, function(index, item) {
+        var a = $("<a>" + item.name + "</a>")
+        a.attr("id", "tagId-" + item.tagId)
+        a.attr("href", "/tag/" + item.tagId)
+        if (History.enabled) {
+            a.bind('click', item, goToTag)
+        }
+        var li = $("<li/>")
+        li.append(a)
+        var li = $("#tags").append(li)
+    })
+
     $("#tags a").parent().removeClass("active")
 
     if (tagId != "") {
