@@ -1,7 +1,7 @@
 $(function() {
 
     $("#titleLink").bind('click', goToHome)
-        
+
     $("#allAppsLink").bind('click', goToHome)
 
     $("#submitLink").bind('click', goToSubmit)
@@ -9,6 +9,8 @@ $(function() {
     $("#searchText").bind('keyup', goToSearch)
 
     $("#searchForm").bind('submit', goToSearch)
+
+    $("#clearSearch").bind('click', goToHome)
 
     var History = window.History
 
@@ -34,7 +36,27 @@ function goToSubmit(event) {
 
 function goToTag(event) {
     event.preventDefault()
-    History.pushState({tagId: event.data.tagId}, "Tag: " + event.data.name, "/tag/" + event.data.tagId)
+
+    if (event.ctrlKey) {
+        if (selectedTags.indexOf(event.data.tagId) >= 0) {
+            selectedTags.splice(selectedTags.indexOf(event.data.tagId), 1)
+        }
+        else {
+            selectedTags.push(event.data.tagId)
+        }
+    }
+    else {
+        selectedTags.splice(0, selectedTags.length, event.data.tagId)
+    }
+
+    // get the tag names
+
+    if (selectedTags.length > 0) {
+        History.pushState({tags: selectedTags}, "Tag: " + event.data.name, "/tag/" + selectedTags)
+    }
+    else {
+        goToHome(event)
+    }
 }
 
 function goToSearch(event) {
@@ -62,7 +84,7 @@ function updatePage(location) {
 
     // parse url
     // /search/{query}
-    // /tag/{tagId}
+    // /tag/{selectedTags}
     // /app/{appId}
 
     var pathname = location.pathname
@@ -71,34 +93,33 @@ function updatePage(location) {
 
     appId = ""
     query = ""
-    tagId = ""
+    selectedTags = []
 
-    if (arr.length == 3) {
-        if (arr[1] == "search") {
-            query = arr[2]
-        }
-        else if (arr[1] == "tag") {
-            tagId = arr[2]
-        }
-        else if (arr[1] == "app") {
-            appId = arr[2]
-        }
+    $("#allAppsLink").parent().removeClass("active")
+    $("#submitLink").parent().removeClass("active")
 
-        $("#allAppsLink").parent().removeClass("active")
+    if (arr[1] == "search") {
+        query = arr[2]
     }
-    else if (arr.length == 2) {
-        if (arr[1] == "submit") {
-            $("#submitLink").parent().addClass("active")
-
-
-
-            return
-        }
-
-        $("#allAppsLink").parent().removeClass("active")
+    else if (arr[1] == "tag") {
+        selectedTags = arr[2].split(",")
+    }
+    else if (arr[1] == "app") {
+        appId = arr[2]
+    }
+    else if (arr[1] == "submit") {
+        $("#submitLink").parent().addClass("active")
     }
     else {
         $("#allAppsLink").parent().addClass("active")
+    }
+
+    $("#searchText").val(query)
+    if (query != "") {
+        $("#clearSearch").show()
+    }
+    else {
+        $("#clearSearch").hide()
     }
 
     fetchTags()
@@ -111,6 +132,8 @@ function fetchApps() {
 
     $.get(location.pathname + location.search, function(data) {
         if ($.isArray(data)) {
+
+            $("#appTemplates").empty()
 
             // tags or search
 
@@ -220,8 +243,8 @@ function renderTags(data) {
 
     $("#tags a").parent().removeClass("active")
 
-    if (tagId != "") {
-        $("#tagId-"+tagId).parent().addClass("active")
+    for (var i = 0; i < selectedTags.length; i++) {
+        $("#tagId-"+selectedTags[i]).parent().addClass("active")
     }
 }
 
@@ -241,5 +264,5 @@ function getRating(appTemplate) {
 
 var appId = ""
 var query = ""
-var tagId = ""
+var selectedTags = []
 var tags = []

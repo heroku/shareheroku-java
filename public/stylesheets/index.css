@@ -53,3 +53,16 @@ body {
 .app-actions button {
     width: 160px;
 }
+
+.search-box {
+    position: relative;
+}
+
+.search-box a {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    height: 12px;
+    margin-top: -8px;
+    display: none;
+}

@@ -76,9 +76,22 @@ public class Application extends Controller {
 
     }
 
-    public static void tag(String tagId) {
+    public static void tag(String tagIds) {
+        if (tagIds == null) {
+            index();
+        }
+
         if (request.format.equals("json")) {
-            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " INNER JOIN a.tags t WHERE UPPER(t.tagId) = UPPER(?) " + getOrderBy(), tagId);
+            String[] tags = tagIds.split(",");
+
+            for (int i = 0; i < tags.length; i++) {
+                tags[i] = tags[i].toUpperCase();
+            }
+            
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find("SELECT a FROM AppTemplate a " + " JOIN a.tags AS tag WHERE UPPER(tag.tagId) IN :tags GROUP BY a.id HAVING COUNT(a.id) = :size " + getOrderBy());
+            jpaQuery.bind("tags", tags);
+            jpaQuery.bind("size", tags.length);
+
             renderJSON(fetchAppTemplates(jpaQuery));
         }
         else {

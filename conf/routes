@@ -11,11 +11,18 @@ GET     /search/{query}                         Application.search
 
 GET     /search                                 Application.search
 
-GET     /tag/{tagId}                            Application.tag
+GET     /tag                                    Application.tag
+GET     /tag/                                   Application.tag
+GET     /tag/{tagIds}                           Application.tag
+
 
 GET     /tags                                   Application.tags
 
 GET     /app/{appId}                            Application.app
+
+
+# Import CRUD routes
+*      /admin              module:crud
 
 
 # Ignore favicon requests
