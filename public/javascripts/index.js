@@ -94,6 +94,7 @@ function updatePage(location) {
     appId = ""
     query = ""
     selectedTags = []
+    showTags = true
 
     $("#allAppsLink").parent().removeClass("active")
     $("#submitLink").parent().removeClass("active")
@@ -109,6 +110,9 @@ function updatePage(location) {
     }
     else if (arr[1] == "submit") {
         $("#submitLink").parent().addClass("active")
+        showTags = false
+
+        renderSubmitForm()
     }
     else {
         $("#allAppsLink").parent().addClass("active")
@@ -178,7 +182,7 @@ function fetchApps() {
 
             })
         }
-        else if (!(typeof data.appId === undefined)) {
+        else if (data.appId !== undefined) {
 
             // individual app
 
@@ -227,25 +231,36 @@ function fetchTags() {
 function renderTags(data) {
     tags = data
 
-    $("#mainContent").prepend('<div class="span3"><div class="well sidebar-nav"><ul id="tags" class="nav nav-list"><li class="nav-header">Tags</li></ul></div></div>')
+    if (showTags) {
 
-    $.each(data, function(index, item) {
-        var a = $("<a>" + item.name + "</a>")
-        a.attr("id", "tagId-" + item.tagId)
-        a.attr("href", "/tag/" + item.tagId)
-        if (History.enabled) {
-            a.bind('click', item, goToTag)
+        $("#mainContent").prepend('<div class="span3"><div class="well sidebar-nav"><ul id="tags" class="nav nav-list"><li class="nav-header">Tags</li></ul></div></div>')
+
+        $.each(data, function(index, item) {
+            var a = $("<a>" + item.name + "</a>")
+            a.attr("id", "tagId-" + item.tagId)
+            a.attr("href", "/tag/" + item.tagId)
+            if (History.enabled) {
+                a.bind('click', item, goToTag)
+            }
+            var li = $("<li/>")
+            li.append(a)
+            var li = $("#tags").append(li)
+        })
+
+        $("#tags a").parent().removeClass("active")
+
+        for (var i = 0; i < selectedTags.length; i++) {
+            $("#tagId-"+selectedTags[i]).parent().addClass("active")
         }
-        var li = $("<li/>")
-        li.append(a)
-        var li = $("#tags").append(li)
-    })
-
-    $("#tags a").parent().removeClass("active")
-
-    for (var i = 0; i < selectedTags.length; i++) {
-        $("#tagId-"+selectedTags[i]).parent().addClass("active")
     }
+}
+
+function renderSubmitForm() {
+
+    $.get("/public/submitForm.html", function(data) {
+        $("#mainContent").append(data)
+    }, "text")
+
 }
 
 function getRating(appTemplate) {
@@ -266,3 +281,4 @@ var appId = ""
 var query = ""
 var selectedTags = []
 var tags = []
+var showTags = true

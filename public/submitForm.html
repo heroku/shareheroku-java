@@ -1,0 +1,90 @@
+<div id='submitForm'>
+
+    <script type="text/javascript">
+        $.each(tags, function(index, item) {
+            $("#tagsSelect").append("<option>" + item.name + "</option>")
+        })
+    </script>
+
+    <form action="/submitApp" method="post" class="form-horizontal">
+        <fieldset>
+            <legend>Submit an App</legend>
+            <div class="control-group">
+                <label class="control-label" for="appId">Application ID</label>
+                <div class="controls">
+                    <input id="appId" name="appId" title="Application ID" type="text" placeholder="foo-bar" class="input-xlarge"/>
+                    <span class="help-block">Used for the URL to an app. Can only contain letters, numbers, and dashes.</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="appId">Application Title</label>
+                <div class="controls">
+                    <input id="title" name="title" title="Application Title" type="text" placeholder="Foo Bar" class="input-xlarge"/>
+                    <span class="help-block">Short name for the application</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="description">Description</label>
+                <div class="controls">
+                    <textarea id="description" name="description" rows="5" class="input-xlarge"></textarea>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="demoUrl">Demo URL</label>
+                <div class="controls">
+                    <input id="demoUrl" name="title" title="Demo URL" type="text" placeholder="http://foobar.herokuapp.com" class="input-xlarge"/>
+                    <span class="help-block">URL to a live demo of the app</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="sourceUrl">Source URL</label>
+                <div class="controls">
+                    <input id="sourceUrl" name="sourceUrl" title="Source URL" type="text" placeholder="http://github.com/me/foobar" class="input-xlarge"/>
+                    <span class="help-block">URL to browse the app source</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="gitUrl">Git URL</label>
+                <div class="controls">
+                    <input id="gitUrl" name="gitUrl" title="Git URL" type="text" placeholder="git@github.com:foobar.git" class="input-xlarge"/>
+                    <span class="help-block">URL to the git source repo</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="documentationUrl">Documentation URL</label>
+                <div class="controls">
+                    <input id="documentationUrl" name="documentationUrl" title="Documentation URL" type="text" placeholder="http://github.com/me/foobar/README.md" class="input-xlarge"/>
+                    <span class="help-block">URL to documentation</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="instructionsUrl">Instructions URL</label>
+                <div class="controls">
+                    <input id="instructionsUrl" name="instructionsUrl" title="Instructions URL" type="text" placeholder="http://github.com/me/foobar/INSTRUCTIONS.md" class="input-xlarge"/>
+                    <span class="help-block">URL to project setup instructions</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="tagsSelect">Tags</label>
+                <div class="controls">
+                    <select id="tagsSelect" multiple="multiple">
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Submit App</button>
+            </div>
+        </fieldset>
+
+    </form>
+
+</div>

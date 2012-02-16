@@ -5,6 +5,10 @@
 # Home page
 GET     /                                       Application.index
 
+GET     /submit                                 Application.submit
+
+POST    /submitApp                              Application.submitApp
+
 POST    /shareApp                               Application.shareApp
 
 GET     /search/{query}                         Application.search

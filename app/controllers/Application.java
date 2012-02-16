@@ -60,6 +60,24 @@ public class Application extends Controller {
             render();
         }
     }
+
+    public static void submit() {
+        if (request.format.equals("json")) {
+            renderJSON("{}");
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+    }
+
+    public static void submitApp(AppTemplate appTemplate) {
+        if (request.format.equals("json")) {
+            renderJSON("{}");
+        }
+        else {
+            renderTemplate("Application/index.html");
+        }
+    }
     
     public static void search(String query) {
         if (query.length() == 0) {
