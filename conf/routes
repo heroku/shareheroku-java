@@ -26,7 +26,8 @@ GET     /app/{appId}                            Application.app
 
 
 # Import CRUD routes
-*      /admin              module:crud
+*      /admin                                   module:crud
+*      /                                        module:secure
 
 
 # Ignore favicon requests

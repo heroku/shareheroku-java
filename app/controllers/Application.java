@@ -8,6 +8,7 @@ import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
 import models.AppTemplate;
 import models.Tag;
+import play.data.validation.Valid;
 import play.db.jpa.GenericModel;
 import play.libs.F;
 import play.mvc.*;
@@ -70,12 +71,20 @@ public class Application extends Controller {
         }
     }
 
-    public static void submitApp(AppTemplate appTemplate) {
+    public static void submitApp(@Valid AppTemplate appTemplate) {
         if (request.format.equals("json")) {
-            renderJSON("{}");
+            if(validation.hasErrors()) {
+                throw new RuntimeException(validation.errorsMap().toString());
+            }
+
+            appTemplate.save();
         }
         else {
-            renderTemplate("Application/index.html");
+            if(validation.hasErrors()) {
+
+            }
+
+            appTemplate.save();
         }
     }
     
@@ -106,7 +115,7 @@ public class Application extends Controller {
                 tags[i] = tags[i].toUpperCase();
             }
             
-            GenericModel.JPAQuery jpaQuery = AppTemplate.find("SELECT a FROM AppTemplate a " + " JOIN a.tags AS tag WHERE UPPER(tag.tagId) IN :tags GROUP BY a.id HAVING COUNT(a.id) = :size " + getOrderBy());
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " JOIN a.tags AS tag WHERE UPPER(tag.tagId) IN :tags GROUP BY a.id HAVING COUNT(a.id) = :size " + getOrderBy());
             jpaQuery.bind("tags", tags);
             jpaQuery.bind("size", tags.length);
 
@@ -131,7 +140,7 @@ public class Application extends Controller {
 
     public static void tags() {
         if (request.format.equals("json")) {
-            List<Tag> tags = Tag.findAll();
+            List<Tag> tags = Tag.find("SELECT tag From Tag tag ORDER BY tagId").fetch();
             renderJSON(tags);
         }
         else {

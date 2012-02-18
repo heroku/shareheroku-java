@@ -43,7 +43,6 @@ public class AppTemplate extends Model {
     public String sourceUrl;
 
     @Required
-    @URL
     public String gitUrl;
     
     @Required
@@ -57,6 +56,9 @@ public class AppTemplate extends Model {
     @ManyToMany
     public List<Tag> tags;
 
+    // todo: json ignore
+    public String suggestedTags;
+
     @Min(1)
     @Max(5)
     public int rating;
@@ -68,5 +70,10 @@ public class AppTemplate extends Model {
 
     public static enum Status {
         PENDING, PUBLISHED;
+    }
+    
+    @Override
+    public String toString() {
+        return title;
     }
 }

@@ -1,5 +1,6 @@
 package controllers;
 
+import models.AppTemplate;
 import play.*;
 import play.mvc.*;
 

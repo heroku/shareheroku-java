@@ -188,21 +188,19 @@ function fetchApps() {
 
             var t = $("<div class='thumbnail container-fluid'></div>")
 
-            var row = $("<div class='row-fluid app-details'></div>")
+            var row = $("<div class='app-details row-fluid'></div>")
             t.append(row)
 
-            var l = $("<div class='span9'></div>")
+            var l = $("<div class='span8'></div>")
             l.append("<h2>" + data.title + "</h2>")
             l.append("<p>" + data.description + "</p>")
             l.append("<h5>Demo: <a href='" + data.demoUrl + "' target='_blank'>" + data.demoUrl + "</a></h5>")
             l.append("<h5>Source: <a href='" + data.sourceUrl + "' target='_blank'>" + data.sourceUrl + "</a></h5>")
             l.append("<h5>Documentation: <a href='" + data.documentationUrl + "' target='_blank'>" + data.documentationUrl + "</a></h5>")
-            l.append("<hr/>")
-            l.append("<h3>Comments</h3>")
-            l.append("<p>blah blah comments</p>")
+
             row.append(l)
 
-            var rc = $("<div class='span3'></div>")
+            var rc = $("<div class='span4'></div>")
             var r = $("<div class='app-actions'></div>")
             rc.append(r)
 
@@ -212,6 +210,15 @@ function fetchApps() {
             r.append("<button class='btn'>Copy and Deploy</button>")
 
             row.append(rc)
+
+
+
+            var comments = $("<div class='comments'></div>")
+            comments.append("<hr/>")
+            comments.append("<h3>Comments</h3>")
+            comments.append("<p>blah blah comments</p>")
+
+            //t.append(comments)
 
             $("#appTemplates").append(t)
         }
@@ -230,6 +237,11 @@ function fetchTags() {
 
 function renderTags(data) {
     tags = data
+
+    // nasty
+    if (typeof updateTags !== "undefined") {
+        updateTags()
+    }
 
     if (showTags) {
 

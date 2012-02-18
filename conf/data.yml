@@ -42,8 +42,8 @@ models.Tag(containerless):
     tagId:  containerless
     name:   Containerless
 
-models.Tag(play-1_2):
-    tagId:  play-1_2
+models.Tag(play-1-2):
+    tagId:  play-1-2
     name:   Play Framework 1.2
 
 models.Tag(spring):
@@ -62,8 +62,8 @@ models.Tag(akka):
     tagId:  akka
     name:   Akka
 
-models.AppTemplate(java_maven_tomcat_war):
-    appId:            java_maven_tomcat_war
+models.AppTemplate(java-maven-tomcat-war):
+    appId:            java-maven-tomcat-war
     title:            Java with Maven, Tomcat, and WAR packaging
     demoUrl:          http://java-webapp-template.herokuapp.com
     sourceUrl:        https://github.com/jamesward/java-webapp-template
@@ -81,8 +81,8 @@ models.AppTemplate(java_maven_tomcat_war):
                       A simple Java web application that uses the Maven build tool.  Tomcat Runner is used to run the
                       application.  Standard WAR structure and packaging is used.
 
-models.AppTemplate(java_maven_tomcat_containerless):
-    appId:            java_maven_tomcat_containerless
+models.AppTemplate(java-maven-tomcat-containerless):
+    appId:            java-maven-tomcat-containerless
     title:            Java with Maven and Containerless Tomcat
     demoUrl:          http://falling-journey-9776.herokuapp.com
     sourceUrl:        https://github.com/heroku/devcenter-embedded-tomcat
@@ -100,8 +100,8 @@ models.AppTemplate(java_maven_tomcat_containerless):
                       A simple Java web application that uses the Maven build tool.  Embedded Tomcat is used to run the
                       application.  The application is packaged as a JAR so that it can be run containerless.
 
-models.AppTemplate(java_maven_jetty_containerless):
-    appId:            java_maven_jetty_containerless
+models.AppTemplate(java-maven-jetty-containerless):
+    appId:            java-maven-jetty-containerless
     title:            Java with Maven and Containerless Jetty
     demoUrl:          http://glowing-autumn-4004.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellojavaheroku
@@ -119,8 +119,8 @@ models.AppTemplate(java_maven_jetty_containerless):
                       A simple Java web application that uses the Maven build tool.  Embedded Jetty is used to run the
                       application.  The application is packaged as a JAR so that it can be run containerless.
 
-models.AppTemplate(java_play_1_2):
-    appId:            java_play_1_2
+models.AppTemplate(java-play-1-2):
+    appId:            java-play-1-2
     title:            Simple Play! v1.2.3 + Java App
     demoUrl:          http://warm-samurai-6100.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplay
@@ -129,15 +129,15 @@ models.AppTemplate(java_play_1_2):
     instructionsUrl:  README.md
     tags:
                       - java
-                      - play-1_2
+                      - play-1-2
                       - containerless
     status:           PUBLISHED
     rating:           4
     description:      >
                       Play Framework v. 1.2.3 application with Java.
 
-models.AppTemplate(scala_play_1_2):
-    appId:            scala_play_1_2
+models.AppTemplate(scala-play-1-2):
+    appId:            scala-play-1-2
     title:            Simple Play! v1.2.3 + Scala App
     demoUrl:          http://hollow-summer-5131.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplayscala
@@ -146,15 +146,15 @@ models.AppTemplate(scala_play_1_2):
     instructionsUrl:  README.md
     tags:
                       - scala
-                      - play-1_2
+                      - play-1-2
                       - containerless
     status:           PUBLISHED
     rating:           3
     description:      >
                       Play Framework v. 1.2.3 application with Scala.
 
-models.AppTemplate(java_spring_roo_petclinic):
-    appId:            java_spring_roo_petclinic
+models.AppTemplate(java-spring-roo-petclinic):
+    appId:            java-spring-roo-petclinic
     title:            Spring MVC & Hibernate (Spring Roo petclinic)
     demoUrl:          http://floating-samurai-9174.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellospringroo
@@ -172,8 +172,8 @@ models.AppTemplate(java_spring_roo_petclinic):
                       A complete Spring MVC and Hibernate application built with Spring Roo.  This application uses war
                       packaging and Jetty Runner.
 
-models.AppTemplate(java_websolr):
-    appId:            java_websolr
+models.AppTemplate(java-websolr):
+    appId:            java-websolr
     title:            Java + WebSolr Add-on
     demoUrl:          http://websolr-java.herokuapp.com/
     sourceUrl:        https://github.com/anandbn/websolr-java
@@ -188,8 +188,8 @@ models.AppTemplate(java_websolr):
     description:      >
                       An example web application that uses the WebSolr Heroku add-on.
 
-models.AppTemplate(scala_sbt_finagle):
-    appId:            scala_sbt_finagle
+models.AppTemplate(scala-sbt-finagle):
+    appId:            scala-sbt-finagle
     title:            Scala/SBT Finagle Web App
     demoUrl:          http://hollow-dawn-5005.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellowebscala
@@ -205,8 +205,8 @@ models.AppTemplate(scala_sbt_finagle):
     description:      >
                       An example Scala application that uses the Twitter Finagle and sbt.
 
-models.AppTemplate(scala_sbt_akka_webwords):
-    appId:            scala_sbt_akka_webwords
+models.AppTemplate(scala-sbt-akka-webwords):
+    appId:            scala-sbt-akka-webwords
     title:            Scala + Akka
     demoUrl:          http://webwords.herokuapp.com
     sourceUrl:        https://github.com/typesafehub/webwords/
@@ -222,8 +222,8 @@ models.AppTemplate(scala_sbt_akka_webwords):
     description:      >
                       An complete application that uses Scala, Akka, and sbt.
 
-models.AppTemplate(clojure_compojure):
-    appId:            clojure_compojure
+models.AppTemplate(clojure-compojure):
+    appId:            clojure-compojure
     title:            Simple Clojure/Compojure Web App
     demoUrl:          http://stark-water-4282.herokuapp.com/
     sourceUrl:        https://github.com/metadaddy-sfdc/HelloClojureCompojure

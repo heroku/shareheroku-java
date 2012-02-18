@@ -26,4 +26,9 @@ public class Tag extends Model {
     @MaxSize(value = 64)
     public String name;
 
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 }
