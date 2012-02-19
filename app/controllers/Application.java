@@ -2,15 +2,19 @@ package controllers;
 
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
-import com.google.gson.Gson;
 import com.heroku.api.App;
+import com.heroku.api.Heroku;
+import com.heroku.api.HerokuAPI;
+import com.heroku.api.connection.HttpClientConnection;
+import com.heroku.api.http.HttpUtil;
+import com.heroku.api.request.RequestConfig;
+import com.heroku.api.request.app.AppCreate;
+import com.heroku.api.request.login.BasicAuthLogin;
 import helpers.EmailHelper;
-import helpers.HerokuAppSharingHelper;
 import models.AppTemplate;
 import models.Tag;
 import play.data.validation.Valid;
 import play.db.jpa.GenericModel;
-import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
 
@@ -149,68 +153,39 @@ public class Application extends Controller {
 
     }
 
-    public static void shareApp(String emailAddress, String gitUrl) {
+    public static void shareApp(String emailAddress, String appId) {
+
+        AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
+
         validation.email(emailAddress);
-        validation.minSize(gitUrl, 1); //todo: convert to matcher
 
         if(validation.hasErrors()) {
-            Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
-            errors.put("error", new HashMap<String, String>());
-            for (Error error : validation.errors()) {
-                errors.get("error").put(error.getKey(), error.message());
-            }
-            renderJSON(errors);
+            error(validation.errorsMap().toString());
         }
         else {
             JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
-            tracker.trackEvent("app", "shareApp", gitUrl);
+            tracker.trackEvent("app", "shareApp", appTemplate.appId);
 
-            Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
-            errors.put("error", new HashMap<String, String>());
+            HttpClientConnection herokuConnection = new HttpClientConnection(new BasicAuthLogin(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")));
+            HerokuAPI herokuAPI = new HerokuAPI(herokuConnection);
 
-            try {
-                HerokuAppSharingHelper job = new HerokuAppSharingHelper(emailAddress, gitUrl);
-                F.Promise<App> promiseAppMetadata = job.now();
+            // create an app on heroku (using heroku credentials specified in ${HEROKU_USERNAME} / ${HEROKU_PASSWORD}
+            App app = herokuConnection.execute(new AppTemplateCreate(appTemplate.herokuAppName));
 
-                String encoding = Http.Response.current().encoding;
-                response.setContentTypeIfNotSet("application/json; charset=" + encoding);
-
-                // force this connection to stay open
-                while (!promiseAppMetadata.isDone()) {
-                    Thread.sleep(1000);
-                    response.writeChunk("");
-                }
-
-                App app = await(promiseAppMetadata);
-
-                if (job.exception != null) {
-                    throw job.exception;
-                }
-
-                Map<String, App> result = new HashMap<String, App>();
-                result.put("result", app);
-
-                response.writeChunk(new Gson().toJson(result));
-                return;
-            }
-            catch (Throwable e) {
-
-                try {
-                    StringWriter sw = new StringWriter();
-                    PrintWriter pw = new PrintWriter(sw);
-                    e.printStackTrace(pw);
-                    EmailHelper.sendEmailViaMailGun(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_USERNAME"), "App Error: " + request.host, e.getMessage() + "\r\n" + sw.toString());
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-
-                errors.get("error").put("shareApp", e.getMessage());
+            if (!app.getCreateStatus().equals("complete")) {
+                error("Could not create the Heroku app");
             }
 
-            if (errors.get("error") != null) {
-                response.writeChunk(new Gson().toJson(errors));
-            }
+            // share the app with the provided email
+            herokuAPI.addCollaborator(app.getName(), emailAddress);
 
+            // transfer the app to the provided email
+            herokuAPI.transferApp(app.getName(), emailAddress);
+
+            // remove ${HEROKU_USERNAME} as collaborator
+            herokuAPI.removeCollaborator(app.getName(), System.getenv("HEROKU_USERNAME"));
+
+            renderJSON(app);
         }
     }
 

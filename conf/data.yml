@@ -67,7 +67,7 @@ models.AppTemplate(java-maven-tomcat-war):
     title:            Java with Maven, Tomcat, and WAR packaging
     demoUrl:          http://java-webapp-template.herokuapp.com
     sourceUrl:        https://github.com/jamesward/java-webapp-template
-    gitUrl:           git://github.com/jamesward/java-webapp-template.git
+    herokuAppName:    java-webapp-template
     documentationUrl: https://github.com/jamesward/java-webapp-template/ARTICLE.md
     instructionsUrl:  https://github.com/jamesward/java-webapp-template/README.md
     tags:
@@ -86,7 +86,7 @@ models.AppTemplate(java-maven-tomcat-containerless):
     title:            Java with Maven and Containerless Tomcat
     demoUrl:          http://falling-journey-9776.herokuapp.com
     sourceUrl:        https://github.com/heroku/devcenter-embedded-tomcat
-    gitUrl:           git://github.com/heroku/devcenter-embedded-tomcat.git
+    herokuAppName:    falling-journey-9776
     documentationUrl: https://github.com/heroku/devcenter-embedded-tomcat/ARTICLE.md
     instructionsUrl:  https://github.com/heroku/devcenter-embedded-tomcat/README.md
     tags:
@@ -105,7 +105,7 @@ models.AppTemplate(java-maven-jetty-containerless):
     title:            Java with Maven and Containerless Jetty
     demoUrl:          http://glowing-autumn-4004.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellojavaheroku
-    gitUrl:           git://github.com/jamesward/hellojavaheroku.git
+    herokuAppName:    glowing-autumn-4004
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -124,7 +124,7 @@ models.AppTemplate(java-play-1-2):
     title:            Simple Play! v1.2.3 + Java App
     demoUrl:          http://warm-samurai-6100.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplay
-    gitUrl:           git://github.com/jamesward/helloplay.git
+    herokuAppName:    warm-samurai-6100
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -141,7 +141,7 @@ models.AppTemplate(scala-play-1-2):
     title:            Simple Play! v1.2.3 + Scala App
     demoUrl:          http://hollow-summer-5131.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplayscala
-    gitUrl:           git://github.com/jamesward/helloplayscala.git
+    herokuAppName:    hollow-summer-5131
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -158,7 +158,7 @@ models.AppTemplate(java-spring-roo-petclinic):
     title:            Spring MVC & Hibernate (Spring Roo petclinic)
     demoUrl:          http://floating-samurai-9174.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellospringroo
-    gitUrl:           git://github.com/jamesward/hellospringroo.git
+    herokuAppName:    floating-samurai-9174
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -177,7 +177,7 @@ models.AppTemplate(java-websolr):
     title:            Java + WebSolr Add-on
     demoUrl:          http://websolr-java.herokuapp.com/
     sourceUrl:        https://github.com/anandbn/websolr-java
-    gitUrl:           git://github.com/anandbn/websolr-java.git
+    herokuAppName:    websolr-java
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -193,7 +193,7 @@ models.AppTemplate(scala-sbt-finagle):
     title:            Scala/SBT Finagle Web App
     demoUrl:          http://hollow-dawn-5005.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellowebscala
-    gitUrl:           git://github.com/jamesward/hellowebscala.git
+    herokuAppName:    hollow-dawn-5005
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -210,7 +210,7 @@ models.AppTemplate(scala-sbt-akka-webwords):
     title:            Scala + Akka
     demoUrl:          http://webwords.herokuapp.com
     sourceUrl:        https://github.com/typesafehub/webwords/
-    gitUrl:           git://github.com/typesafehub/webwords.git
+    herokuAppName:    webwords
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:
@@ -227,7 +227,7 @@ models.AppTemplate(clojure-compojure):
     title:            Simple Clojure/Compojure Web App
     demoUrl:          http://stark-water-4282.herokuapp.com/
     sourceUrl:        https://github.com/metadaddy-sfdc/HelloClojureCompojure
-    gitUrl:           git://github.com/metadaddy-sfdc/HelloClojureCompojure.git
+    herokuAppName:    stark-water-4282
     documentationUrl: ARTICLE.md
     instructionsUrl:  README.md
     tags:

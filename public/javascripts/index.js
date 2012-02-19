@@ -206,12 +206,10 @@ function fetchApps() {
 
             r.append(getRating(data))
             r.append("<h3>Deploy on Heroku:</h3>")
-            r.append("<input type='text' placeholder='Email Address'/>")
-            r.append("<button class='btn'>Copy and Deploy</button>")
+            r.append("<input id='emailAddress' type='text' placeholder='Email Address'/>")
+            r.append("<button id='deployAppButton' class='btn'>Copy and Deploy</button>")
 
             row.append(rc)
-
-
 
             var comments = $("<div class='comments'></div>")
             comments.append("<hr/>")
@@ -221,6 +219,9 @@ function fetchApps() {
             //t.append(comments)
 
             $("#appTemplates").append(t)
+
+            $("#emailAddress").bind('keyup', deployApp)
+            $("#deployAppButton").bind('click', deployApp)
         }
     }, "json")
 }
@@ -287,6 +288,21 @@ function getRating(appTemplate) {
     }
 
     return rs
+}
+
+function deployApp(event) {
+    if ((event.type == "click") ||
+        ((event.type == "keyup") && (event.keyCode == 13))) {
+        var o = {}
+        o.emailAddress = $("#emailAddress").val()
+        o.appId = appId;
+
+        $.post("/shareApp", o, function(data) {
+            alert(JSON.stringify(data))
+        }, "json").error(function(error) {
+            alert(JSON.stringify(error))
+        })
+    }
 }
 
 var appId = ""

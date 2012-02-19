@@ -43,7 +43,7 @@ public class AppTemplate extends Model {
     public String sourceUrl;
 
     @Required
-    public String gitUrl;
+    public String herokuAppName;
     
     @Required
     @URL

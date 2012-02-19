@@ -11,20 +11,16 @@
             formData['appTemplate.description'] = $("#description").val()
             formData['appTemplate.demoUrl'] = $("#demoUrl").val()
             formData['appTemplate.sourceUrl'] = $("#sourceUrl").val()
-            formData['appTemplate.gitUrl'] = $("#gitUrl").val()
+            formData['appTemplate.herokuAppName'] = $("#herokuAppName").val()
             formData['appTemplate.documentationUrl'] = $("#documentationUrl").val()
             formData['appTemplate.instructionsUrl'] = $("#instructionsUrl").val()
             formData['appTemplate.suggestedTags'] = $("#suggestedTags").val()
 
-            $.post("/submitApp", formData, handleFormSubmit, "json")
-        }
-
-        function handleFormSubmit(data) {
-            alert(data)
-        }
-
-        function handleError(error) {
-            alert(error)
+            $.post("/submitApp", formData, function(data) {
+                alert(JSON.stringify(data))
+            }, "json").error(function(error) {
+                alert(JSON.stringify(error))
+            })
         }
 
         function updateTags() {
@@ -89,9 +85,9 @@
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="gitUrl">Git URL</label>
+                <label class="control-label" for="herokuAppName">Git URL</label>
                 <div class="controls">
-                    <input id="gitUrl" name="appTemplate.gitUrl" title="Git URL" type="text" placeholder="git@github.com:foobar.git" class="input-xlarge"/>
+                    <input id="herokuAppName" name="appTemplate.herokuAppName" title="Git URL" type="text" placeholder="git@github.com:foobar.git" class="input-xlarge"/>
                     <span class="help-block">URL to the git source repo</span>
                 </div>
             </div>
