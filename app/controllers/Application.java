@@ -119,7 +119,7 @@ public class Application extends Controller {
                 tags[i] = tags[i].toUpperCase();
             }
             
-            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " JOIN a.tags AS tag WHERE UPPER(tag.tagId) IN :tags GROUP BY a.id HAVING COUNT(a.id) = :size " + getOrderBy());
+            GenericModel.JPAQuery jpaQuery = AppTemplate.find(BASE_APPTEMPLATE_SELECT + " JOIN a.tags AS tag WHERE UPPER(tag.tagId) IN :tags GROUP BY a.id, a.appId HAVING COUNT(a.id) = :size " + getOrderBy());
             jpaQuery.bind("tags", tags);
             jpaQuery.bind("size", tags.length);
 
