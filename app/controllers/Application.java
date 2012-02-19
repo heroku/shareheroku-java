@@ -168,8 +168,6 @@ public class Application extends Controller {
 
             HttpClientConnection herokuConnection = new HttpClientConnection(new BasicAuthLogin(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")));
             HerokuAPI herokuAPI = new HerokuAPI(herokuConnection);
-
-            System.out.println("herokuAppName="+appTemplate.herokuAppName);
             
             // create an app on heroku (using heroku credentials specified in ${HEROKU_USERNAME} / ${HEROKU_PASSWORD}
             App app = herokuConnection.execute(new AppTemplateCreate(appTemplate.herokuAppName));
