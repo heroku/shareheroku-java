@@ -7,7 +7,7 @@
 
             var formData = {}
             formData['appTemplate.appId'] = $("#appId").val()
-            formData['appTemplate.title'] = $("#title").val()
+            formData['appTemplate.title'] = $("#appTitle").val()
             formData['appTemplate.description'] = $("#description").val()
             formData['appTemplate.demoUrl'] = $("#demoUrl").val()
             formData['appTemplate.sourceUrl'] = $("#sourceUrl").val()
@@ -47,9 +47,9 @@
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="title">Application Title</label>
+                <label class="control-label" for="appTitle">Application Title</label>
                 <div class="controls">
-                    <input id="title" name="appTemplate.title" title="Application Title" type="text" placeholder="Foo Bar" class="input-xlarge"/>
+                    <input id="appTitle" name="appTemplate.title" title="Application Title" type="text" placeholder="Foo Bar" class="input-xlarge"/>
                     <span class="help-block">Short name for the application</span>
                 </div>
             </div>

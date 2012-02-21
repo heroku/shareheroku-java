@@ -298,6 +298,7 @@ function deployApp(event) {
         o.appId = appId;
 
         $.post("/shareApp", o, function(data) {
+            
             alert(JSON.stringify(data))
         }, "json").error(function(error) {
             alert(JSON.stringify(error))

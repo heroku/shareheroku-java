@@ -69,9 +69,8 @@ body {
 .search-box a {
     position: absolute;
     right: 10px;
+    margin-top: -8px;
     top: 50%;
-      marg-8n {
-    width: 90%;
 }
 
 #sugwidowsdTags {
