@@ -12,6 +12,10 @@ $(function() {
 
     $("#clearSearch").bind('click', goToHome)
 
+    $('#deployDetails').on('hidden', function () {
+        $(".modal-body").empty()
+    })
+
     var History = window.History
 
     History.Adapter.bind(window,'statechange', function() {
@@ -207,7 +211,7 @@ function fetchApps() {
             r.append(getRating(data))
             r.append("<h3>Deploy on Heroku:</h3>")
             r.append("<input id='emailAddress' type='text' placeholder='Email Address'/>")
-            r.append("<button id='deployAppButton' class='btn'>Copy and Deploy</button>")
+            r.append("<button id='deployAppButton' class='btn disabled'>Deploy on Heroku</button>")
 
             row.append(rc)
 
@@ -291,17 +295,38 @@ function getRating(appTemplate) {
 }
 
 function deployApp(event) {
-    if ((event.type == "click") ||
-        ((event.type == "keyup") && (event.keyCode == 13))) {
+
+    // check the email format
+    var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    var e = $('#emailAddress').val()
+
+    if (re.test(e)) {
+        $("#deployAppButton").removeClass("disabled")
+    }
+    else {
+        $("#deployAppButton").addClass("disabled")
+    }
+
+    if (((event.type == "click") || ((event.type == "keyup") && (event.keyCode == 13))) && ($("#deployAppButton").hasClass("disabled") == false))  {
+
+        $(".modal-body").append('<div class="progress progress-info progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
+
+        $("#deployDetails").modal()
+
+
         var o = {}
         o.emailAddress = $("#emailAddress").val()
         o.appId = appId;
 
         $.post("/shareApp", o, function(data) {
-            
-            alert(JSON.stringify(data))
+
+            // todo: update the modal details
+
         }, "json").error(function(error) {
-            alert(JSON.stringify(error))
+
+           // todo: display the error
+
         })
     }
 }

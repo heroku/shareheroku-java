@@ -1,5 +1,5 @@
 #{extends 'main.html' /}
-#{set title:'Clone a Heroku App' /}
+#{set title:'Heroku App Templates' /}
 
 #{set 'moreStyles'}
 <link rel="stylesheet" type="text/css" href="@{'/public/stylesheets/index.css'}">
@@ -10,6 +10,7 @@
 #{set 'moreScripts'}
 <script src="@{'/public/javascripts/jquery.history.js'}" type="text/javascript"></script>
 <script src="@{'/public/javascripts/bootstrap.min.js'}" type="text/javascript"></script>
+<script src="@{'/public/javascripts/bootstrap-modal.js'}" type="text/javascript"></script>
 <script src="@{'/public/javascripts/index.js'}" type="text/javascript"></script>
 #{/set}
 
@@ -20,4 +21,13 @@
 <div id="mainContent" class="row-fluid">
 
 
+</div>
+
+<div id="deployDetails" class="modal hide fade">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3>Deploying on Heroku</h3>
+    </div>
+    <div class="modal-body">
+    </div>
 </div>

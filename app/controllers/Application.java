@@ -153,7 +153,11 @@ public class Application extends Controller {
 
     }
 
-    public static void shareApp(String emailAddress, String appId) {
+    public static void shareApp(String emailAddress, String appId) throws InterruptedException {
+
+        if (true) {
+            throw new InterruptedException("foo");
+        }
 
         AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
 
