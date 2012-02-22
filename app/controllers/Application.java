@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.*;
 
+//@With(Compress.class)
 public class Application extends Controller {
 
     private static final AnalyticsConfigData config = new AnalyticsConfigData("UA-26859570-1");

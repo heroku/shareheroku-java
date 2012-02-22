@@ -311,9 +311,7 @@ function deployApp(event) {
     if (((event.type == "click") || ((event.type == "keyup") && (event.keyCode == 13))) && ($("#deployAppButton").hasClass("disabled") == false))  {
 
         $(".modal-body").append('<div class="progress progress-info progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
-
         $("#deployDetails").modal()
-
 
         var o = {}
         o.emailAddress = $("#emailAddress").val()
@@ -324,9 +322,9 @@ function deployApp(event) {
             // todo: update the modal details
 
         }, "json").error(function(error) {
-
-           // todo: display the error
-
+           var resp = $.parseJSON(error.responseText)
+           $(".progress").remove()
+           $(".modal-body").append("<div class='alert alert-error'><strong>Error:</strong> " + resp.message + "</div>")
         })
     }
 }
