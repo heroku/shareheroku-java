@@ -2,8 +2,12 @@
 
     <script type="text/javascript">
 
-        function doSubmit(event) {
-            event.preventDefault()
+        var dirtyFormItems = {}
+
+        function getFormData() {
+            // cleanup error messages
+            $("#submitForm .error span").remove()
+            $("#submitForm .error").removeClass("error")
 
             var formData = {}
             formData['appTemplate.appId'] = $("#appId").val()
@@ -15,34 +19,90 @@
             formData['appTemplate.documentationUrl'] = $("#documentationUrl").val()
             formData['appTemplate.instructionsUrl'] = $("#instructionsUrl").val()
             formData['appTemplate.suggestedTags'] = $("#suggestedTags").val()
+            formData['appTemplate.submitterEmail'] = $("#submitterEmail").val()
+            return formData
+        }
+
+        function doValidate(event) {
+            dirtyFormItems[event.target.id] = true;
+            $("#"+event.target.id).attr("placeholder", "")
+
+            var formData = getFormData()
+            formData.validateOnly = true
 
             $.post("/submitApp", formData, function(data) {
-                alert(JSON.stringify(data))
-            }, "json").error(function(error) {
-                alert(JSON.stringify(error))
-            })
+                $("#submitForm button").removeClass("disabled")
+            }, "json").error(handleError)
         }
 
-        function updateTags() {
-            $.each(tags, function(index, item) {
-                $("#tagsSelect").append("<option>" + item.name + "</option>")
-            })
+        function doSubmit(event) {
+            event.preventDefault()
+
+            var formData = getFormData()
+            formData.validateOnly = false
+
+            $.post("/submitApp", formData, function(data) {
+
+                $("#submitForm").remove()
+                $("#submitFormDiv").append("<div class='alert alert-success'><strong>Application Submitted!</strong></div>")
+
+            }, "json").error(handleError)
         }
 
-        updateTags()
+        function updateErrors(itemId, elementId, elementClass, msg) {
+            if ((msg !== undefined) && (dirtyFormItems[elementId] !== undefined)) {
+                $("#"+elementId).parent().parent().addClass("error")
+                $("#"+elementId).parent().append("<span class='"+elementClass+"'>" + msg + "</span>")
+            }
+        }
 
+        function handleError(error) {
+            $("#submitForm button").addClass("disabled")
+
+            var resp = $.parseJSON(error.responseText)
+            var msg = null
+
+            if (resp != null) {
+                try {
+                    msg = $.parseJSON(resp.message)
+                }
+                catch(e) {
+                    // ignored
+                }
+            }
+
+            if (msg == null) {
+                // unknown error
+                msg = resp.message;
+                $(".form-actions").prepend("<div class='alert alert-error'><a class='close' data-dismiss='alert'>&times</a><strong>Error!</strong> " + msg + "</div>")
+            }
+            else {
+                // validation error
+                updateErrors('appTemplate.appId', 'appId', 'help-inline', msg['appTemplate.appId'])
+                updateErrors('appTemplate.title', 'appTitle', 'help-inline', msg['appTemplate.title'])
+                updateErrors('appTemplate.description', 'description', 'help-block', msg['appTemplate.description'])
+                updateErrors('appTemplate.demoUrl', 'demoUrl', 'help-inline', msg['appTemplate.demoUrl'])
+                updateErrors('appTemplate.sourceUrl', 'sourceUrl', 'help-inline', msg['appTemplate.sourceUrl'])
+                updateErrors('appTemplate.herokuAppName', 'herokuAppName', 'help-inline', msg['appTemplate.herokuAppName'])
+                updateErrors('appTemplate.documentationUrl', 'documentationUrl', 'help-inline', msg['appTemplate.documentationUrl'])
+                updateErrors('appTemplate.instructionsUrl', 'instructionsUrl', 'help-inline', msg['appTemplate.instructionsUrl'])
+                updateErrors('appTemplate.suggestedTags', 'suggestedTags', 'help-inline', msg['appTemplate.suggestedTags'])
+                updateErrors('appTemplate.submitterEmail', 'submitterEmail', 'help-inline', msg['appTemplate.submitterEmail'])
+            }
+        }
+
+        $(".controls input").bind('change', doValidate)
+        $(".controls textarea").bind('change', doValidate)
         $("#submitForm").bind('submit', doSubmit)
 
     </script>
 
     <form id="submitForm" action="/submitApp" method="post" class="form-horizontal">
         <fieldset>
-            <legend>Submit an App</legend>
             <div class="control-group">
                 <label class="control-label" for="appId">Application ID</label>
                 <div class="controls">
                     <input id="appId" name="appTemplate.appId" title="Application ID" type="text" placeholder="foo-bar" class="input-xlarge"/>
-                    <span class="help-block">Used for the URL to an app. Can only contain letters, numbers, and dashes.</span>
                 </div>
             </div>
 
@@ -50,7 +110,6 @@
                 <label class="control-label" for="appTitle">Application Title</label>
                 <div class="controls">
                     <input id="appTitle" name="appTemplate.title" title="Application Title" type="text" placeholder="Foo Bar" class="input-xlarge"/>
-                    <span class="help-block">Short name for the application</span>
                 </div>
             </div>
 
@@ -72,7 +131,6 @@
                 <label class="control-label" for="demoUrl">Demo URL</label>
                 <div class="controls">
                     <input id="demoUrl" name="appTemplate.demoUrl" title="Demo URL" type="text" placeholder="http://foobar.herokuapp.com" class="input-xlarge"/>
-                    <span class="help-block">URL to a live demo of the app</span>
                 </div>
             </div>
 
@@ -80,15 +138,13 @@
                 <label class="control-label" for="sourceUrl">Source URL</label>
                 <div class="controls">
                     <input id="sourceUrl" name="appTemplate.sourceUrl" title="Source URL" type="text" placeholder="http://github.com/me/foobar" class="input-xlarge"/>
-                    <span class="help-block">URL to browse the app source</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="herokuAppName">Git URL</label>
+                <label class="control-label" for="herokuAppName">Heroku App Name</label>
                 <div class="controls">
-                    <input id="herokuAppName" name="appTemplate.herokuAppName" title="Git URL" type="text" placeholder="git@github.com:foobar.git" class="input-xlarge"/>
-                    <span class="help-block">URL to the git source repo</span>
+                    <input id="herokuAppName" name="appTemplate.herokuAppName" title="Git URL" type="text" placeholder="rising-ocean-1234" class="input-xlarge"/>
                 </div>
             </div>
 
@@ -96,20 +152,26 @@
                 <label class="control-label" for="documentationUrl">Documentation URL</label>
                 <div class="controls">
                     <input id="documentationUrl" name="appTemplate.documentationUrl" title="Documentation URL" type="text" placeholder="http://github.com/me/foobar/README.md" class="input-xlarge"/>
-                    <span class="help-block">URL to documentation</span>
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="instructionsUrl">Instructions URL</label>
+                <label class="control-label" for="instructionsUrl">Setup Instructions URL</label>
                 <div class="controls">
-                    <input id="instructionsUrl" name="appTemplate.instructionsUrl" title="Instructions URL" type="text" placeholder="http://github.com/me/foobar/HOWTO.md" class="input-xlarge"/>
-                    <span class="help-block">URL to project setup instructions</span>
+                    <input id="instructionsUrl" name="appTemplate.instructionsUrl" title="Instructions URL" type="text" placeholder="http://tryit.herokuapp.com/public/instructions/maven.html" class="input-xlarge"/>
+                    <span class="help-block">Options....</span>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="submitterEmail">Your Email</label>
+                <div class="controls">
+                    <input id="submitterEmail" name="appTemplate.submitterEmail" title="Email Address" type="text" placeholder="foo@bar.com" class="input-xlarge"/>
                 </div>
             </div>
 
             <div class="form-actions">
-                <button type="submit" class="btn btn-primary">Submit App</button>
+                <button type="submit" class="btn btn-primary disabled">Submit App</button>
             </div>
         </fieldset>
 

@@ -16,6 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class EmailHelper {
 
-    public static void sendEmailViaMailGun(String senderEmail, String receiverEmail, String subject, String body) throws IOException, URISyntaxException, EncoderException {
+    public static void sendEmailViaMailGun(String senderEmail, String receiverEmail, String subject, String body) {
 
         if (System.getenv("MAILGUN_API_KEY") == null) {
             throw new RuntimeException("MAILGUN_API_KEY environment variable not found");
@@ -43,7 +44,12 @@ public class EmailHelper {
         formPairs.add(new BasicNameValuePair("subject", subject));
         formPairs.add(new BasicNameValuePair("text", body));
 
-        UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(formPairs);
+        UrlEncodedFormEntity urlEncodedFormEntity = null;
+        try {
+            urlEncodedFormEntity = new UrlEncodedFormEntity(formPairs);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         HttpPost httpPost = new HttpPost("https://api.mailgun.net/v2/" + mailGunApp + "/messages");
         httpPost.setEntity(urlEncodedFormEntity);
@@ -51,7 +57,11 @@ public class EmailHelper {
         String encoding = new String(Base64.encodeBase64(StringUtils.getBytesUtf8("api:" + System.getenv("MAILGUN_API_KEY"))));
         httpPost.setHeader("Authorization", "Basic " + encoding);
 
-        HttpResponse response = httpClient.execute(httpPost);
+        try {
+            HttpResponse response = httpClient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

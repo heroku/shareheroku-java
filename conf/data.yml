@@ -68,8 +68,8 @@ models.AppTemplate(java-maven-tomcat-war):
     demoUrl:          http://java-webapp-template.herokuapp.com
     sourceUrl:        https://github.com/jamesward/java-webapp-template
     herokuAppName:    java-webapp-template
-    documentationUrl: https://github.com/jamesward/java-webapp-template/ARTICLE.md
-    instructionsUrl:  https://github.com/jamesward/java-webapp-template/README.md
+    documentationUrl: https://github.com/jamesward/java-webapp-template/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - maven
@@ -87,8 +87,8 @@ models.AppTemplate(java-maven-tomcat-containerless):
     demoUrl:          http://falling-journey-9776.herokuapp.com
     sourceUrl:        https://github.com/heroku/devcenter-embedded-tomcat
     herokuAppName:    falling-journey-9776
-    documentationUrl: https://github.com/heroku/devcenter-embedded-tomcat/ARTICLE.md
-    instructionsUrl:  https://github.com/heroku/devcenter-embedded-tomcat/README.md
+    documentationUrl: https://github.com/heroku/devcenter-embedded-tomcat/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - maven
@@ -106,8 +106,8 @@ models.AppTemplate(java-maven-jetty-containerless):
     demoUrl:          http://glowing-autumn-4004.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellojavaheroku
     herokuAppName:    glowing-autumn-4004
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/jamesward/hellojavaheroku/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - maven
@@ -125,8 +125,8 @@ models.AppTemplate(java-play-1-2):
     demoUrl:          http://warm-samurai-6100.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplay
     herokuAppName:    warm-samurai-6100
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/jamesward/helloplay/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - play-1-2
@@ -142,8 +142,8 @@ models.AppTemplate(scala-play-1-2):
     demoUrl:          http://hollow-summer-5131.herokuapp.com
     sourceUrl:        https://github.com/jamesward/helloplayscala
     herokuAppName:    hollow-summer-5131
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/jamesward/helloplayscala/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - scala
                       - play-1-2
@@ -159,8 +159,8 @@ models.AppTemplate(java-spring-roo-petclinic):
     demoUrl:          http://floating-samurai-9174.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellospringroo
     herokuAppName:    floating-samurai-9174
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/jamesward/hellospringroo/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - spring
@@ -178,8 +178,8 @@ models.AppTemplate(java-websolr):
     demoUrl:          http://websolr-java.herokuapp.com/
     sourceUrl:        https://github.com/anandbn/websolr-java
     herokuAppName:    websolr-java
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/anandbn/websolr-java/README.md
+    instructionsUrl:  /public/instructions/maven.html
     tags:
                       - java
                       - websolr
@@ -194,8 +194,8 @@ models.AppTemplate(scala-sbt-finagle):
     demoUrl:          http://hollow-dawn-5005.herokuapp.com
     sourceUrl:        https://github.com/jamesward/hellowebscala
     herokuAppName:    hollow-dawn-5005
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/jamesward/hellowebscala/README.md
+    instructionsUrl:  /public/instructions/sbt.html
     tags:
                       - scala
                       - sbt
@@ -211,8 +211,8 @@ models.AppTemplate(scala-sbt-akka-webwords):
     demoUrl:          http://webwords.herokuapp.com
     sourceUrl:        https://github.com/typesafehub/webwords/
     herokuAppName:    webwords
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/typesafehub/webwords/README.md
+    instructionsUrl:  /public/instructions/sbt.html
     tags:
                       - scala
                       - sbt
@@ -228,8 +228,8 @@ models.AppTemplate(clojure-compojure):
     demoUrl:          http://stark-water-4282.herokuapp.com/
     sourceUrl:        https://github.com/metadaddy-sfdc/HelloClojureCompojure
     herokuAppName:    stark-water-4282
-    documentationUrl: ARTICLE.md
-    instructionsUrl:  README.md
+    documentationUrl: https://github.com/metadaddy-sfdc/HelloClojureCompojure/README.md
+    instructionsUrl:  /public/instructions/clojure.html
     tags:
                       - clojure
                       - compojure

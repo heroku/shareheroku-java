@@ -1,3 +1,4 @@
 # You can specialize this file for each language.
 # For example, for French create a messages.fr file
 #
+validation.cloneableappcheck=The Heroku app must be shared with &{%2$s} to be used as a template.  Run: heroku sharing:add &{%2$s}

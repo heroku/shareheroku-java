@@ -73,6 +73,14 @@ body {
     top: 50%;
 }
 
-#sugwidowsdTags {
+#submitForm input {
+    width: 350px;
+}
+
+#description {
     width: 90%;
+}
+
+.help-block a {
+    margin-left: 20px;
 }

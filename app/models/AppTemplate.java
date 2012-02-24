@@ -1,10 +1,12 @@
 package models;
 
+import helpers.CloneableAppCheck;
 import play.data.validation.*;
 import play.db.jpa.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
@@ -18,10 +20,10 @@ public class AppTemplate extends Model {
     }
     
     @Required
-    @Unique
+    @Unique(message = "A template with that ID already exists")
     @MinSize(3)
     @MaxSize(64)
-    @Match(value="^\\w*$", message="Not a valid app id")
+    @Match(value="[a-zA-Z0-9\\-]*$", message="The Application ID must only contain letters, numbers, and dashes")
     public String appId;
     
     @Required
@@ -43,20 +45,24 @@ public class AppTemplate extends Model {
     public String sourceUrl;
 
     @Required
+    @CheckWith(CloneableAppCheck.class)
     public String herokuAppName;
     
     @Required
     @URL
     public String documentationUrl;
 
-    @Required
-    @URL
     public String instructionsUrl;
+
+    @Required
+    @Email
+    public String submitterEmail;
 
     @ManyToMany
     public List<Tag> tags;
 
     // todo: json ignore
+    @Required
     public String suggestedTags;
 
     @Min(1)
@@ -66,6 +72,18 @@ public class AppTemplate extends Model {
     public Status status;
     
     public Date lastUpdated;
+
+    public String toFullString() {
+        return  "App ID: " + appId + "\n" +
+                "Title: " + title + "\n" +
+                "Description:\n" + description + "\n" +
+                "Demo URL: " + demoUrl + "\n" +
+                "Source URL: " + sourceUrl + "\n" +
+                "Heroku App Name: " + herokuAppName + "\n" +
+                "Documentation URL: " + documentationUrl + "\n" +
+                "Instructions URL: " + instructionsUrl + "\n" +
+                "Suggested Tags: " + suggestedTags + "\n";
+    }
 
 
     public static enum Status {

@@ -13,6 +13,7 @@ $(function() {
     $("#clearSearch").bind('click', goToHome)
 
     $('#deployDetails').on('hidden', function () {
+        $(".modal-header").empty()
         $(".modal-body").empty()
     })
 
@@ -224,8 +225,8 @@ function fetchApps() {
 
             $("#appTemplates").append(t)
 
-            $("#emailAddress").bind('keyup', deployApp)
-            $("#deployAppButton").bind('click', deployApp)
+            $("#emailAddress").bind('keyup', data, deployApp)
+            $("#deployAppButton").bind('click', data, deployApp)
         }
     }, "json")
 }
@@ -310,16 +311,22 @@ function deployApp(event) {
 
     if (((event.type == "click") || ((event.type == "keyup") && (event.keyCode == 13))) && ($("#deployAppButton").hasClass("disabled") == false))  {
 
+        $(".modal-header").append('<h3>Deploying App on Heroku</h3>')
         $(".modal-body").append('<div class="progress progress-info progress-striped active"><div class="bar" style="width: 100%;"></div></div>')
         $("#deployDetails").modal()
 
         var o = {}
         o.emailAddress = $("#emailAddress").val()
-        o.appId = appId;
+        o.appId = event.data.appId;
 
         $.post("/shareApp", o, function(data) {
+            $(".progress").remove()
+            $(".modal-header").empty()
+            $(".modal-header").append('<a class="close" data-dismiss="modal">&times;</a>')
+            $(".modal-header").append('<h3>App Deployed on Heroku!</h3>')
+            $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.webUrl + '">' + data.webUrl + '</a><br/>Git URL: <a href="' + data.gitUrl + '">' + data.gitUrl + '</a></div>')
 
-            // todo: update the modal details
+            // todo: instructions from event.data.instructionsUrl
 
         }, "json").error(function(error) {
            var resp = $.parseJSON(error.responseText)

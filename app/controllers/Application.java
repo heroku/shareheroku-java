@@ -2,6 +2,7 @@ package controllers;
 
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
+import com.google.gson.Gson;
 import com.heroku.api.App;
 import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
@@ -13,13 +14,17 @@ import com.heroku.api.request.login.BasicAuthLogin;
 import helpers.EmailHelper;
 import models.AppTemplate;
 import models.Tag;
+import org.apache.commons.codec.EncoderException;
 import play.data.validation.Valid;
 import play.db.jpa.GenericModel;
 import play.mvc.*;
 import play.data.validation.Error;
 
+import javax.persistence.Tuple;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
 import java.util.*;
 
 //@With(Compress.class)
@@ -76,21 +81,35 @@ public class Application extends Controller {
         }
     }
 
-    public static void submitApp(@Valid AppTemplate appTemplate) {
-        if (request.format.equals("json")) {
-            if(validation.hasErrors()) {
-                throw new RuntimeException(validation.errorsMap().toString());
+    // todo: revalidating the entire object every time one field changes is silly
+    public static void submitApp(@Valid AppTemplate appTemplate, boolean validateOnly) {
+
+        if(validation.hasErrors()) {
+            if (request.format.equals("json")) {
+                HashMap<String, List<String>> errors = new HashMap<String, List<String>>();
+                
+                for (Error error : validation.errors()) {
+                    if (errors.get(error.getKey()) == null) {
+                        errors.put(error.getKey(), new ArrayList<String>());
+                    }
+                    errors.get(error.getKey()).add(error.toString());
+                }
+
+                String errorsJson = new Gson().toJson(errors);
+                error(errorsJson);
             }
-
-            appTemplate.save();
-        }
-        else {
-            if(validation.hasErrors()) {
-
+            else {
+                error(validation.errors().toString());
             }
-
-            appTemplate.save();
         }
+
+        if (!validateOnly) {
+            appTemplate.save();
+
+            EmailHelper.sendEmailViaMailGun(appTemplate.submitterEmail, System.getenv("HEROKU_USERNAME"), "New Template Submission", appTemplate.toFullString());
+        }
+
+        ok();
     }
     
     public static void search(String query) {
@@ -154,44 +173,54 @@ public class Application extends Controller {
 
     }
 
-    public static void shareApp(String emailAddress, String appId) throws InterruptedException {
-
-        if (true) {
-            throw new InterruptedException("foo");
-        }
-
+    public static void shareApp(String emailAddress, String appId) {
+        
         AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
 
-        validation.email(emailAddress);
-
-        if(validation.hasErrors()) {
-            error(validation.errorsMap().toString());
+        if (!validation.email(emailAddress).ok) {
+            error("Invalid Email Address");
         }
-        else {
-            JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
-            tracker.trackEvent("app", "shareApp", appTemplate.appId);
+        
+        if (appTemplate == null) {
+            error("Invalid Application");
+        }
 
-            HttpClientConnection herokuConnection = new HttpClientConnection(new BasicAuthLogin(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_PASSWORD")));
-            HerokuAPI herokuAPI = new HerokuAPI(herokuConnection);
-            
-            // create an app on heroku (using heroku credentials specified in ${HEROKU_USERNAME} / ${HEROKU_PASSWORD}
-            App app = herokuConnection.execute(new AppTemplateCreate(appTemplate.herokuAppName));
-
-            if (!app.getCreateStatus().equals("complete")) {
-                error("Could not create the Heroku app");
+        if ((System.getenv("HEROKU_USERNAME") == null) || (System.getenv("HEROKU_API_KEY") == null)) {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-
-            // share the app with the provided email
-            herokuAPI.addCollaborator(app.getName(), emailAddress);
-
-            // transfer the app to the provided email
-            herokuAPI.transferApp(app.getName(), emailAddress);
-
-            // remove ${HEROKU_USERNAME} as collaborator
-            herokuAPI.removeCollaborator(app.getName(), System.getenv("HEROKU_USERNAME"));
-
-            renderJSON(app);
+            // mock app
+            HashMap<String, String> mockApp = new HashMap<String, String>();
+            mockApp.put("name", "fake-app-1234");
+            mockApp.put("webUrl", "http://fake-app-1234.herokuapp.com");
+            mockApp.put("gitUrl", "git@heroku.com:fake-app-1234.git");
+            renderJSON(mockApp);
         }
+
+        // create an app on heroku
+        JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
+        tracker.trackEvent("app", "shareApp", appTemplate.appId);
+
+        HerokuAPI herokuAPI = new HerokuAPI(System.getenv("HEROKU_API_KEY"));
+        
+        App app = herokuAPI.getConnection().execute(new AppTemplateCreate(appTemplate.herokuAppName));
+
+        if (!app.getCreateStatus().equals("complete")) {
+            error("Could not create the Heroku app");
+        }
+
+        // share the app with the provided email
+        herokuAPI.addCollaborator(app.getName(), emailAddress);
+
+        // transfer the app to the provided email
+        herokuAPI.transferApp(app.getName(), emailAddress);
+
+        // remove ${HEROKU_USERNAME} as collaborator
+        herokuAPI.removeCollaborator(app.getName(), System.getenv("HEROKU_USERNAME"));
+
+        renderJSON(app);
     }
 
 }
