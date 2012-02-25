@@ -194,8 +194,8 @@ public class Application extends Controller {
             // mock app
             HashMap<String, String> mockApp = new HashMap<String, String>();
             mockApp.put("name", "fake-app-1234");
-            mockApp.put("webUrl", "http://fake-app-1234.herokuapp.com");
-            mockApp.put("gitUrl", "git@heroku.com:fake-app-1234.git");
+            mockApp.put("web_url", "http://fake-app-1234.herokuapp.com");
+            mockApp.put("git_url", "git@heroku.com:fake-app-1234.git");
             renderJSON(mockApp);
         }
 

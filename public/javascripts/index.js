@@ -324,7 +324,7 @@ function deployApp(event) {
             $(".modal-header").empty()
             $(".modal-header").append('<a class="close" data-dismiss="modal">&times;</a>')
             $(".modal-header").append('<h3>App Deployed on Heroku!</h3>')
-            $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.webUrl + '">' + data.webUrl + '</a><br/>Git URL: <a href="' + data.gitUrl + '">' + data.gitUrl + '</a></div>')
+            $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.web_url + '">' + data.web_url + '</a><br/>Git URL: ' + data.git_url + '</div>')
 
             // todo: instructions from event.data.instructionsUrl
 
