@@ -1,6 +1,7 @@
 package models;
 
 import helpers.CloneableAppCheck;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import play.data.validation.*;
 import play.db.jpa.Model;
 
@@ -56,12 +57,13 @@ public class AppTemplate extends Model {
 
     @Required
     @Email
+    @JsonIgnore
     public String submitterEmail;
 
     @ManyToMany
     public List<Tag> tags;
 
-    // todo: json ignore
+    @JsonIgnore
     @Required
     public String suggestedTags;
 
