@@ -5,6 +5,6 @@ require:
     - play -> crud
     - play -> secure
     - com.dmurph -> JGoogleAnalyticsTracker 1.2.0
-    - com.heroku.api -> heroku-api 0.2
-    - com.heroku.api -> heroku-json-jackson 0.2
-    - com.heroku.api -> heroku-http-apache 0.2
+    - com.heroku.api -> heroku-api 0.3
+    - com.heroku.api -> heroku-json-jackson 0.3
+    - com.heroku.api -> heroku-http-apache 0.3
