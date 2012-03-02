@@ -275,7 +275,7 @@ function renderTags(data) {
 
 function renderSubmitForm() {
 
-    $.get("/public/submitForm.html", function(data) {
+    $.get(submitFormUrl, function(data) {
         $("#mainContent").append(data)
     }, "text")
 
