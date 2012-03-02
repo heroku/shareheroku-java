@@ -275,9 +275,17 @@ function renderTags(data) {
 
 function renderSubmitForm() {
 
-    $.get(submitFormUrl, function(data) {
-        $("#mainContent").append(data)
-    }, "text")
+    $.ajax({
+        url: submitFormUrl,
+        dataType: "jsonp text",
+        cache: true,
+        crossDomain: true,
+        jsonp: false,
+        jsonpCallback: "loadSubmitForm",
+        success: function(data) {
+            $("#mainContent").append(data)
+        }
+    })
 
 }
 
