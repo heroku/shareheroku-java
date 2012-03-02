@@ -33,7 +33,7 @@ public class AppTemplate extends Model {
     public String title;
 
     @Required
-    @MinSize(64)
+    @MinSize(32)
     @MaxSize(65536)
     public String description;
     
@@ -53,6 +53,8 @@ public class AppTemplate extends Model {
     @URL
     public String documentationUrl;
 
+    @Required
+    @URL
     public String instructionsUrl;
 
     @Required
