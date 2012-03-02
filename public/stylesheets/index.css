@@ -84,3 +84,16 @@ body {
 .help-block a {
     margin-left: 20px;
 }
+
+#deployDetails {
+    width: 800px;
+    margin-left: -400px;
+    height: 660px;
+    margin-top: -330px;
+    max-height: 660px;
+}
+
+#deployDetails iframe {
+    width: 100%;
+    height: 500px;
+}

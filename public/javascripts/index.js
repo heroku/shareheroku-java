@@ -325,9 +325,7 @@ function deployApp(event) {
             $(".modal-header").append('<a class="close" data-dismiss="modal">&times;</a>')
             $(".modal-header").append('<h3>App Deployed on Heroku!</h3>')
             $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.web_url + '">' + data.web_url + '</a><br/>Git URL: ' + data.git_url + '</div>')
-
-            // todo: instructions from event.data.instructionsUrl
-
+            $(".modal-body").append('<iframe src="'+data.instructions_url+'"></iframe>')
         }, "json").error(function(error) {
            var resp = $.parseJSON(error.responseText)
            $(".progress").remove()

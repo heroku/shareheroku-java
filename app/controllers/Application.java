@@ -4,27 +4,17 @@ import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
 import com.heroku.api.App;
-import com.heroku.api.Heroku;
 import com.heroku.api.HerokuAPI;
-import com.heroku.api.connection.HttpClientConnection;
-import com.heroku.api.http.HttpUtil;
-import com.heroku.api.request.RequestConfig;
-import com.heroku.api.request.app.AppCreate;
-import com.heroku.api.request.login.BasicAuthLogin;
-import helpers.EmailHelper;
 import models.AppTemplate;
 import models.Tag;
-import org.apache.commons.codec.EncoderException;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.MultiPartEmail;
 import play.data.validation.Valid;
 import play.db.jpa.GenericModel;
+import play.libs.Mail;
 import play.mvc.*;
 import play.data.validation.Error;
 
-import javax.persistence.Tuple;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.util.*;
 
 //@With(Compress.class)
@@ -82,7 +72,7 @@ public class Application extends Controller {
     }
 
     // todo: revalidating the entire object every time one field changes is silly
-    public static void submitApp(@Valid AppTemplate appTemplate, boolean validateOnly) {
+    public static void submitApp(@Valid AppTemplate appTemplate, boolean validateOnly) throws EmailException {
 
         if(validation.hasErrors()) {
             if (request.format.equals("json")) {
@@ -106,7 +96,17 @@ public class Application extends Controller {
         if (!validateOnly) {
             appTemplate.save();
 
-            EmailHelper.sendEmailViaMailGun(appTemplate.submitterEmail, System.getenv("HEROKU_USERNAME"), "New Template Submission", appTemplate.toFullString());
+            if (System.getenv("HEROKU_USERNAME") != null) {
+                MultiPartEmail email = new MultiPartEmail();
+
+                email.setFrom(appTemplate.submitterEmail);
+                email.addTo(System.getenv("HEROKU_USERNAME"));
+                email.setSubject("New Template Submission");
+                email.setMsg(appTemplate.toFullString());
+
+                Mail.send(email);
+            }
+
         }
 
         ok();
@@ -187,7 +187,7 @@ public class Application extends Controller {
 
         if ((System.getenv("HEROKU_USERNAME") == null) || (System.getenv("HEROKU_API_KEY") == null)) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -196,6 +196,7 @@ public class Application extends Controller {
             mockApp.put("name", "fake-app-1234");
             mockApp.put("web_url", "http://fake-app-1234.herokuapp.com");
             mockApp.put("git_url", "git@heroku.com:fake-app-1234.git");
+            mockApp.put("instructions_url", "/public/instructions/maven.html");
             renderJSON(mockApp);
         }
 
