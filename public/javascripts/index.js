@@ -187,7 +187,7 @@ function fetchApps() {
 
             })
         }
-        else if (data.appId !== undefined) {
+        else if (typeof data.appId !== "undefined") {
 
             // individual app
 
@@ -319,17 +319,26 @@ function deployApp(event) {
         o.emailAddress = $("#emailAddress").val()
         o.appId = event.data.appId;
 
-        $.post("/shareApp", o, function(data) {
-            $(".progress").remove()
-            $(".modal-header").empty()
-            $(".modal-header").append('<a class="close" data-dismiss="modal">&times;</a>')
-            $(".modal-header").append('<h3>App Deployed on Heroku!</h3>')
-            $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.web_url + '">' + data.web_url + '</a><br/>Git URL: ' + data.git_url + '</div>')
-            $(".modal-body").append('<iframe src="'+data.instructions_url+'"></iframe>')
-        }, "json").error(function(error) {
-           var resp = $.parseJSON(error.responseText)
-           $(".progress").remove()
-           $(".modal-body").append("<div class='alert alert-error'><strong>Error:</strong> " + resp.message + "</div>")
+        $.ajax({
+            url: "/shareApp",
+
+            context: event.data,
+            data: o,
+            success: function(data) {
+                $(".progress").remove()
+                $(".modal-header").empty()
+                $(".modal-header").append('<a class="close" data-dismiss="modal">&times;</a>')
+                $(".modal-header").append('<h3>App Deployed on Heroku!</h3>')
+                $(".modal-body").append('<div class="alert alert-success">Web URL: <a href="' + data.web_url + '">' + data.web_url + '</a><br/>Git URL: ' + data.git_url + '</div>')
+                $(".modal-body").append('<iframe src="'+this.instructionsUrl+'"></iframe>')
+            },
+            error: function(error) {
+               var resp = $.parseJSON(error.responseText)
+               $(".progress").remove()
+               $(".modal-body").append("<div class='alert alert-error'><strong>Error:</strong> " + resp.message + "</div>")
+            },
+            type: "post",
+            dataType: "json"
         })
     }
 }

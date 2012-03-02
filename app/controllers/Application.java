@@ -174,7 +174,6 @@ public class Application extends Controller {
     }
 
     public static void shareApp(String emailAddress, String appId) {
-        
         AppTemplate appTemplate = AppTemplate.find("byAppId", appId).first();
 
         if (!validation.email(emailAddress).ok) {
@@ -196,7 +195,6 @@ public class Application extends Controller {
             mockApp.put("name", "fake-app-1234");
             mockApp.put("web_url", "http://fake-app-1234.herokuapp.com");
             mockApp.put("git_url", "git@heroku.com:fake-app-1234.git");
-            mockApp.put("instructions_url", "/public/instructions/maven.html");
             renderJSON(mockApp);
         }
 
