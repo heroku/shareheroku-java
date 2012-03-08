@@ -38,7 +38,7 @@ GET     /favicon.ico                            404
     GET     /public/                        staticDir:public
 #{/}
 #{else}
-    GET     d1jtvgded0ezhq.cloudfront.net/public  staticDir:public
+    GET     d2iu8jbjgczc8x.cloudfront.net/public  staticDir:public
     GET     /public/                              staticDir:public
 #{/}
 
