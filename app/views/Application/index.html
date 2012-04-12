@@ -33,10 +33,9 @@ label.app {
 <script type="text/javascript">
 
     var apps = [
-        {name: "Simple Play! + Scala App (v. 1.2.3)", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play"},
-        {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
-        {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
-        {name: "Simple Clojure/Compojure Web App", demoUrl: "http://stark-water-4282.herokuapp.com/", sourceUrl: "https://github.com/metadaddy-sfdc/HelloClojureCompojure", gitUrl: "git://github.com/metadaddy-sfdc/HelloClojureCompojure.git", buildTool: "compojure"}
+        {name: "Simple Play! + Scala App (v. 1.2.3)", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", appId: "hollow-summer-5131", buildTool: "play"},
+        {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", appId: "hollow-dawn-5005", buildTool: "sbt"},
+        {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", appId: "webwords", buildTool: "sbt"}
     ];
 
     var buildTools = {
@@ -60,7 +59,7 @@ label.app {
         });
 
         $.each(apps.reverse(), function(index, value) {
-            if (value.gitUrl != "") {
+            if (value.appIs != "") {
                 $("#apps").prepend('<div class="row"><label class="app"><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)</div>');
             }
         });
@@ -68,41 +67,19 @@ label.app {
         $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:480});
 
         $('#emailAddress').hint();
-        $('#customGitUrl').hint();
 
         $('#shareAppButton').attr("disabled", true);
 
         $("input[name=app]").change(function () {
-            checkCustomGitUrlVisible();
             checkFormReady();
         });
 
         $("#emailAddress").keyup(function () {
             checkFormReady();
         });
-
-        $("#customGitUrl").keyup(function () {
-            checkFormReady();
-        });
-
-        checkCustomGitUrlVisible();
     });
 
-    function checkCustomGitUrlVisible() {
-        if ($("#customGitUrlRadio").attr("checked")) {
-            $("#customGitUrl").show();
-        }
-        else {
-            $("#customGitUrl").hide();
-        }
-    }
-
     function checkFormReady() {
-        if ($("#customGitUrlRadio").attr("checked") && ($("#customGitUrl").val() == $("#customGitUrl")[0].title)) {
-            $('#shareAppButton').attr("disabled", true);
-            return;
-        }
-
         if (($("input[name=app]:checked")) && ($("#emailAddress").val() != $("#emailAddress")[0].title) && (validateEmail($("#emailAddress").val()))) {
             $('#shareAppButton').attr("disabled", false);
         }
@@ -112,21 +89,15 @@ label.app {
     }
 
     function submitForm() {
-        var gitUrl;
         var selectedAppName = $("input[name=app]:checked").val();
 
-        if (selectedAppName == $("#customGitUrlRadio").val()) {
-            selectedApp = {name: selectedAppName, demoUrl: "", sourceUrl: "", gitUrl: $("#customGitUrl").val(), buildTool: ""};
-        }
-        else {
-            $.each(apps, function(index, value) {
-                if (selectedAppName == value.name) {
-                    selectedApp = value;
-                }
-            });
-        }
+        $.each(apps, function(index, value) {
+            if (selectedAppName == value.name) {
+                selectedApp = value;
+            }
+        });
 
-        if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
+        if (($('#emailAddress').val() != "") && (selectedApp.appId != "")) {
             $('#createAppForm').children().attr("disabled", true);
             $('#createAppForm').fadeTo("slow", 0.35);
             $('#progressBar').show();
@@ -136,7 +107,7 @@ label.app {
                 type: 'POST',
                 data: {
                     emailAddress: $('#emailAddress').val(),
-                    gitUrl: selectedApp.gitUrl
+                    appId: selectedApp.appId
                 },
                 success: function(data, textStatus, jqXHR) {
 
@@ -220,7 +191,6 @@ label.app {
 <div class="row">
 <h4>Step 1) Pick an app to start with:</h4>
 <div id="apps" style="margin-left: 30px">
-    <div class="row"><label class="app"><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/></div>
 </div>
 </div>
 <div class="row">
@@ -253,7 +223,7 @@ Shortly you will receive an email that a new app has been shared with you.  If y
 
 <h5>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h5>
 
-<h5>b) Install the Heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a></h5>
+<h5>b) Install the <a href="http://toolbelt.herokuapp.com/">Heroku Toolbelt</a></h5>
 
 </div>
 <div class="row" class="row">

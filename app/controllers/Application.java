@@ -4,8 +4,8 @@ import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
 import com.heroku.api.App;
+import com.heroku.api.HerokuAPI;
 import helpers.EmailHelper;
-import helpers.HerokuAppSharingHelper;
 import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
@@ -22,13 +22,14 @@ public class Application extends Controller {
         render();
     }
 
-    public static void shareApp(String emailAddress, String gitUrl) {
+    public static void shareApp(String emailAddress, String appId) {
         validation.email(emailAddress);
-        validation.minSize(gitUrl, 1); //todo: convert to matcher
+        validation.minSize(appId, 1);
+
+        Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
+        errors.put("error", new HashMap<String, String>());
 
         if(validation.hasErrors()) {
-            Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
-            errors.put("error", new HashMap<String, String>());
             for (Error error : validation.errors()) {
                 errors.get("error").put(error.getKey(), error.message());
             }
@@ -36,35 +37,32 @@ public class Application extends Controller {
         }
         else {
             JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(config, JGoogleAnalyticsTracker.GoogleAnalyticsVersion.V_4_7_2);
-            tracker.trackEvent("app", "shareApp", gitUrl);
-
-            Map<String, Map<String, String>> errors = new HashMap<String, Map<String, String>>();
-            errors.put("error", new HashMap<String, String>());
+            tracker.trackEvent("app", "shareApp", appId);
 
             try {
-                HerokuAppSharingHelper job = new HerokuAppSharingHelper(emailAddress, gitUrl);
-                F.Promise<App> promiseAppMetadata = job.now();
 
-                String encoding = Http.Response.current().encoding;
-                response.setContentTypeIfNotSet("application/json; charset=" + encoding);
+                HerokuAPI herokuAPI = new HerokuAPI(System.getenv("HEROKU_API_KEY"));
 
-                // force this connection to stay open
-                while (!promiseAppMetadata.isDone()) {
-                    Thread.sleep(1000);
-                    response.writeChunk("");
+                App app = herokuAPI.getConnection().execute(new AppTemplateCreate(appId), System.getenv("HEROKU_API_KEY"));
+
+                if (!app.getCreateStatus().equals("complete")) {
+                    errors.get("error").put("shareApp", "Could not create the Heroku app");
+                    renderJSON(errors);
                 }
 
-                App app = await(promiseAppMetadata);
+                // share the app with the provided email
+                herokuAPI.addCollaborator(app.getName(), emailAddress);
 
-                if (job.exception != null) {
-                    throw job.exception;
-                }
-                
+                // transfer the app to the provided email
+                herokuAPI.transferApp(app.getName(), emailAddress);
+
+                // remove ${HEROKU_USERNAME} as collaborator
+                herokuAPI.removeCollaborator(app.getName(), System.getenv("HEROKU_USERNAME"));
+
                 Map<String, App> result = new HashMap<String, App>();
                 result.put("result", app);
 
-                response.writeChunk(new Gson().toJson(result));
-                return;
+                renderJSON(result);
             }
             catch (Throwable e) {
 
@@ -78,10 +76,7 @@ public class Application extends Controller {
                 }
 
                 errors.get("error").put("shareApp", e.getMessage());
-            }
-
-            if (errors.get("error") != null) {
-                response.writeChunk(new Gson().toJson(errors));
+                renderJSON(errors);
             }
             
         }
