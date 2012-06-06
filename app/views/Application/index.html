@@ -17,15 +17,7 @@
 <script type="text/javascript">
 
     $(function() {
-        $('#shareAppButton').click(function() {
-            submitForm();
-        });
-
-        $('#emailAddress').keyup(function(key) {
-            if (key.which == 13) {
-                submitForm();
-            }
-        });
+        $('#createAppForm').submit(submitForm);
 
         $('#shareAppButton').attr("disabled", true);
 
@@ -41,14 +33,18 @@
     function checkFormReady() {
         if (($("#customGitUrl").val() != "") && ($("#emailAddress").val() != "") && (validateEmail($("#emailAddress").val()))) {
             $('#shareAppButton').attr("disabled", false);
+            return true;
         }
         else {
             $('#shareAppButton').attr("disabled", true);
+            return false;
         }
     }
 
-    function submitForm() {
-        if (($('#emailAddress').val() != "") && ($("#customGitUrl").val() != "")) {
+    function submitForm(event) {
+        event.preventDefault();
+        
+        if (checkFormReady()) {
             $('#createAppForm').children().attr("disabled", true);
             $('#createAppForm').fadeTo("slow", 0.35);
             $('#progressBar').show();
