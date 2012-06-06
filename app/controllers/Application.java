@@ -4,8 +4,8 @@ import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
 import com.heroku.api.App;
-import helpers.EmailHelper;
 import helpers.HerokuAppSharingHelper;
+import play.Logger;
 import play.libs.F;
 import play.mvc.*;
 import play.data.validation.Error;
@@ -67,16 +67,7 @@ public class Application extends Controller {
                 return;
             }
             catch (Throwable e) {
-
-                try {
-                    StringWriter sw = new StringWriter();
-                    PrintWriter pw = new PrintWriter(sw);
-                    e.printStackTrace(pw);
-                    EmailHelper.sendEmailViaMailGun(System.getenv("HEROKU_USERNAME"), System.getenv("HEROKU_USERNAME"), "App Error: " + request.host, e.getMessage() + "\r\n" + sw.toString());
-                } catch (Exception exception) {
-                    exception.printStackTrace();
-                }
-
+                Logger.error(e, e.getMessage());
                 errors.get("error").put("shareApp", e.getMessage());
             }
 

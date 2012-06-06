@@ -1,60 +1,20 @@
 #{extends 'main.html' /}
-#{set title:'Get Started with Java on Heroku' /}
+#{set title:'Deploy a Git Repo on Heroku' /}
 #{set 'moreStyles'}
-<link rel="stylesheet" href="@{'/public/colorbox.css'}" />
 <style type="text/css" media="screen">
-input.blur {
-    color: #999;
-}
-.codeExample {
-    background-color: #dddddd;
-    margin-left: 30px;
-    padding: 10px;
-    font-family: monospace;
-    font-size: 10pt;
-}
-h4 {
-    font-size: 10pt;
-}
-h5 {
-    margin-left: 20px;
-    font-size: 8pt;
-}
-label.app {
-    width: auto;
-    float: none;
-    font-size: 16px;
-}
+    body {
+        margin-top: 50px;
+    }
+    h3 {
+        margin-left: 20px;
+    }
+    pre {
+        margin-left: 20px;
+    }
 </style>
 #{/set}
 #{set 'moreScripts'}
-<script type="text/javascript" src="@{'/public/javascripts/jquery.colorbox-min.js'}"></script>
-<script type="text/javascript" src="@{'/public/javascripts/jquery.hint.js'}"></script>
 <script type="text/javascript">
-
-    var apps = [
-        {name: "Java Web App with Maven and Tomcat (webapp-runner)", demoUrl: "http://hellojavawebapprunner.herokuapp.com/", sourceUrl: "https://github.com/jamesward/hellojavawebapprunner", gitUrl: "git://github.com/jamesward/hellojavawebapprunner.git", buildTool: "maven"},
-        {name: "Java Web App with Maven and Containerless Tomcat", demoUrl: "http://falling-journey-9776.herokuapp.com/", sourceUrl: "https://github.com/heroku/devcenter-embedded-tomcat", gitUrl: "git://github.com/heroku/devcenter-embedded-tomcat.git", buildTool: "maven"},
-        {name: "Java Web App with Maven and Containerless Jetty", demoUrl: "http://glowing-autumn-4004.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellojavaheroku", gitUrl: "git://github.com/jamesward/hellojavaheroku.git", buildTool: "maven"},
-        {name: "Simple Play! + Java App (v. 1.2.3)", demoUrl: "http://warm-samurai-6100.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplay", gitUrl: "git://github.com/jamesward/helloplay.git", buildTool: "play"},
-        {name: "Simple Play! + Scala App (v. 1.2.3)", demoUrl: "http://hollow-summer-5131.herokuapp.com", sourceUrl: "https://github.com/jamesward/helloplayscala", gitUrl: "git://github.com/jamesward/helloplayscala.git", buildTool: "play"},
-        {name: "Spring MVC & Hibernate (Spring Roo petclinic)", demoUrl: "http://floating-samurai-9174.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellospringroo", gitUrl: "git://github.com/jamesward/hellospringroo.git", buildTool: "maven"},
-        {name: "Grails 2 Demo", demoUrl: "http://grailbars.herokuapp.com", sourceUrl: "https://github.com/jamesward/grailbars", gitUrl: "git://github.com/jamesward/grailbars.git", buildTool: "grails"},
-        {name: "Java + WebSolr Add-on", demoUrl: "http://websolr-java.herokuapp.com/", sourceUrl: "https://github.com/anandbn/websolr-java", gitUrl: "git://github.com/anandbn/websolr-java.git", buildTool: "maven"},
-        {name: "Scala/SBT Finagle Web App", demoUrl: "http://hollow-dawn-5005.herokuapp.com", sourceUrl: "https://github.com/jamesward/hellowebscala", gitUrl: "git://github.com/jamesward/hellowebscala.git", buildTool: "sbt"},
-        {name: "Scala + Akka", demoUrl: "http://webwords.herokuapp.com", sourceUrl: "https://github.com/typesafehub/webwords/", gitUrl: "git://github.com/typesafehub/webwords.git", buildTool: "sbt"},
-        {name: "Simple Clojure/Compojure Web App", demoUrl: "http://stark-water-4282.herokuapp.com/", sourceUrl: "https://github.com/metadaddy-sfdc/HelloClojureCompojure", gitUrl: "git://github.com/metadaddy-sfdc/HelloClojureCompojure.git", buildTool: "compojure"}
-    ];
-
-    var buildTools = {
-        maven: {installInstructions: 'Install <a href="http://maven.apache.org/download.html">Maven</a>', buildInstruction: "mvn package"},
-        sbt: {installInstructions: 'Install <a href="https://github.com/harrah/xsbt/wiki/Getting-Started-Setup">SBT</a>', buildInstruction: "sbt stage"},
-        play: {installInstructions: 'Install <a href="http://www.playframework.org/download">Play!</a>', buildInstruction: "play run --%prod"},
-        grails: {installInstructions: 'Install <a href="http://www.grails.org/">Play!</a>', buildInstruction: "grails run-app"},
-        compojure: {installInstructions: 'Install <a href="https://github.com/weavejester/compojure">Compojure</a> and <a href="https://github.com/technomancy/leiningen">Leiningen</a>', buildInstruction: "lein run"}
-    };
-
-    var selectedApp;
 
     $(function() {
         $('#shareAppButton').click(function() {
@@ -67,23 +27,7 @@ label.app {
             }
         });
 
-        $.each(apps.reverse(), function(index, value) {
-            if (value.gitUrl != "") {
-                $("#apps").prepend('<div class="row"><label class="app"><input type="radio" name="app" value="' + value.name + '"/>' + value.name + '</label> (<a href="' + value.demoUrl + '">Live Demo</a> | <a href="' + value.sourceUrl + '">Source Code</a>)</div>');
-            }
-        });
-
-        $(".youtube").colorbox({iframe:true, innerWidth:640, innerHeight:480});
-
-        $('#emailAddress').hint();
-        $('#customGitUrl').hint();
-
         $('#shareAppButton').attr("disabled", true);
-
-        $("input[name=app]").change(function () {
-            checkCustomGitUrlVisible();
-            checkFormReady();
-        });
 
         $("#emailAddress").keyup(function () {
             checkFormReady();
@@ -92,26 +36,10 @@ label.app {
         $("#customGitUrl").keyup(function () {
             checkFormReady();
         });
-
-        checkCustomGitUrlVisible();
     });
 
-    function checkCustomGitUrlVisible() {
-        if ($("#customGitUrlRadio").attr("checked")) {
-            $("#customGitUrl").show();
-        }
-        else {
-            $("#customGitUrl").hide();
-        }
-    }
-
     function checkFormReady() {
-        if ($("#customGitUrlRadio").attr("checked") && ($("#customGitUrl").val() == $("#customGitUrl")[0].title)) {
-            $('#shareAppButton').attr("disabled", true);
-            return;
-        }
-
-        if (($("input[name=app]:checked")) && ($("#emailAddress").val() != $("#emailAddress")[0].title) && (validateEmail($("#emailAddress").val()))) {
+        if (($("#customGitUrl").val() != "") && ($("#emailAddress").val() != "") && (validateEmail($("#emailAddress").val()))) {
             $('#shareAppButton').attr("disabled", false);
         }
         else {
@@ -120,21 +48,7 @@ label.app {
     }
 
     function submitForm() {
-        var gitUrl;
-        var selectedAppName = $("input[name=app]:checked").val();
-
-        if (selectedAppName == $("#customGitUrlRadio").val()) {
-            selectedApp = {name: selectedAppName, demoUrl: "", sourceUrl: "", gitUrl: $("#customGitUrl").val(), buildTool: ""};
-        }
-        else {
-            $.each(apps, function(index, value) {
-                if (selectedAppName == value.name) {
-                    selectedApp = value;
-                }
-            });
-        }
-
-        if (($('#emailAddress').val() != "") && (selectedApp.gitUrl != "")) {
+        if (($('#emailAddress').val() != "") && ($("#customGitUrl").val() != "")) {
             $('#createAppForm').children().attr("disabled", true);
             $('#createAppForm').fadeTo("slow", 0.35);
             $('#progressBar').show();
@@ -144,7 +58,7 @@ label.app {
                 type: 'POST',
                 data: {
                     emailAddress: $('#emailAddress').val(),
-                    gitUrl: selectedApp.gitUrl
+                    gitUrl: $("#customGitUrl").val()
                 },
                 success: function(data, textStatus, jqXHR) {
 
@@ -155,22 +69,10 @@ label.app {
                         $('#creatingApp').hide();
                         $('#appReady').show();
 
-                        $('#step1').append('<a href="'+ data.result.web_url + '">' + data.result.web_url + '</a>');
-                        $('#step8').append('<a href="'+ data.result.web_url + '">' + data.result.web_url + '</a>');
+                        $('#step1').append('<h3><a href="'+ data.result.web_url + '">' + data.result.web_url + '</a></h3>');
+                        $('#step7').append('<h3><a href="'+ data.result.web_url + '">' + data.result.web_url + '</a></h3>');
 
-                        $('#step4').append('git clone -o heroku ' + data.result.git_url);
-
-                        if (selectedApp.buildTool != "")
-                        {
-                            $('#step2').append('<h5>c) ' + buildTools[selectedApp.buildTool].installInstructions + '</h5>');
-
-                            $('#step6').append('cd ' + data.result.name + '<br/>');
-
-                            $('#step6').append(buildTools[selectedApp.buildTool].buildInstruction);
-                        }
-                        else {
-                            $('#step6').hide();
-                        }
+                        $('#step4Instructions').append('git clone -o heroku ' + data.result.git_url);
                     }
                     else if (data.error) {
                         reenableForm();
@@ -193,7 +95,7 @@ label.app {
         }
         else {
             reenableForm();
-            $("#errors").append("Email address or app not specified properly");
+            $("#errors").append("Email address or Git URL not specified properly");
         }
     }
 
@@ -223,85 +125,72 @@ label.app {
 </script>
 #{/set}
 
-<div style="max-width: 660px; padding-top: 40px">
-<div id="createAppForm">
-<div class="row">
-<h4>Step 1) Pick an app to start with:</h4>
-<div id="apps" style="margin-left: 30px">
-    <div class="row"><label class="app"><input id="customGitUrlRadio" type="radio" name="app" value="Custom git url"/>Custom git url</label> <input id="customGitUrl" type="text" title="git://github.com/foo/bar.git" style="display: none"/></div>
-</div>
-</div>
-<div class="row">
-<h4>Step 2) Clone the app and give access to:</h4>
-<input id="emailAddress" type="text" title="foo@bar.com" class="required email"/>
-<button id="shareAppButton" class="btn primary">Go!</button><br/>
+<form id="createAppForm">
+    <div id="errors" style="color: #ff0000">
+    </div>
+    
+    <label>Git URL:</label>
+    <input id="customGitUrl" type="text" placeholder="git://github.com/foo/bar.git" class="required" style="width: 300px;">
 
-<div id="errors" style="color: #ff0000">
-</div>
-</div>
-</div>
-<img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 150px; left: 200px; position: absolute;"/>
-<br/>
-<div id="creatingApp" style="display: none;" class="row">
+    <label>Email Address:</label>
+    <input id="emailAddress" type="text" placeholder="foo@bar.com" class="required email">
+    
+    <br/>
+    <button id="shareAppButton" type="submit" class="btn primary">Go!</button>
+</form>
 
-<b>Your app is being created!</b><br/>
+<img id="progressBar" src="@{'/public/images/progress.gif'}" style="display: none; top: 200px; left: 200px; position: absolute;"/>
 <br/>
-Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been activated before proceeding.  While your app is being created watch a quick <a class='youtube' href="http://www.youtube.com/embed/PqLkjJvEMko?rel=0&wmode=transparent" title="Getting Started With Java on Heroku">Intro to Java on Heroku Video</a>.<br/>
+
+<div id="creatingApp" style="display: none;">
+
+    <h1>Your app is being created!</h1>
+    <br/>
+
+    <div class="alert alert-info">
+        Shortly you will receive an email that a new app has been shared with you.  If you haven't yet signed up for a Heroku account, you will be provided an account activation link.  Make sure your account has been activated before proceeding.
+    </div>
 </div>
+
 <div id="appReady" style="display: none;">
-<div class="row">
-<h3>Your app is ready!</h3>
-<div id="step1">
-<h4>Step 1) Check out your app</h4>
-<!-- link here -->
-</div>
-</div>
-<div id="step2" class="row">
-<h4>Step 2) Setup your environment</h4>
+    <h1>Your app is ready!</h1>
+    <br/>
+    <div id="step1">
+        <h2>Step 1) Check out your app:</h2>
+        <!-- link here -->
+    </div>
+    <div id="step2">
+        <h2>Step 2) Setup your environment</h2>
+        <h3>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h3>
+        <h3>b) Install the <a href="http://toolbelt.herokuapp.com">Heroku command line client</a></h3>
+    </div>
+    <div id="step3">
+        <h2>Step 3) Login to Heroku from the command line:</h2>
 
-<h5>a) Install <a href="http://git-scm.com/download">git</a> (used to transfer the app to/from Heroku)</h5>
+        <pre>heroku login</pre>
 
-<h5>b) Install the Heroku command line client on <a href="http://toolbelt.herokuapp.com/linux/readme">Linux</a>, <a href="http://toolbelt.herokuapp.com/osx/download">Mac</a>, or <a href="http://toolbelt.herokuapp.com/windows/download">Windows</a></h5>
-
-</div>
-<div class="row" class="row">
-<h4>Step 3) Login to Heroku from the command line</h4>
-
-    <p class="codeExample">
-    heroku login
-    </p>
-
-This should also setup an SSH key and pair it with your Hekoku account.
-</div>
-<div class="row">
-<h4>Step 4) Copy the app from Heroku to your local machine</h4>
-    <p id="step4" class="codeExample">
-
-    </p>
-</div>
-<div class="row">
-<h4>Step 5) Makes some changes to the app</h4>
-</div>
-<div class="row">
-<h4>Step 6) Make sure the app still compiles locally</h4>
-    <p id="step6" class="codeExample">
-
-    </p>
-</div>
-<div class="row">
-<h4>Step 7) Add the changes to git, commit them, and push the changes to Heroku</h4>
-    <p class="codeExample">
-    git add .<br/>
-    git commit -m "changed something"<br/>
-    git push heroku master<br/>
-    </p>
-</div>
-<div id="step8" class="row">
-<h4>Step 8) Check out your changes</h4>
-<!-- link here -->
-</div>
-<div class="row">
-<h4>Step 9) Keep learning by visiting the <a href="http://devcenter.heroku.com/tags/java">Heroku Dev Center</a></h4>
-</div>
-</div>
+        <div class="alert alert-info" style="margin-left: 20px;">
+            The first time you login from the command line you will be instructed to setup an SSH key and pair it with your Heroku account.
+        </div>
+    </div>
+    <div id="step4">
+        <h2>Step 4) Copy the app from Heroku to your local machine:</h2>
+        <pre id="step4Instructions"><!-- instructions go here --></pre>
+    </div>
+    <div id="step5">
+        <h2>Step 5) Makes some changes to the app</h2>
+    </div>
+    <div id="step6">
+        <h2>Step 6) Add the changes to git, commit them, and push the changes to Heroku:</h2>
+        <pre>git add .
+git commit -m "changed something"
+git push heroku master</pre>
+    </div>
+    <div id="step7">
+        <h2>Step 7) Check out your changes:</h2>
+        <!-- link here -->
+    </div>
+    <div id="step8">
+        <h2>Step 8) Keep learning by visiting the <a href="http://devcenter.heroku.com/">Heroku Dev Center</a></h2>
+    </div>
 </div>
