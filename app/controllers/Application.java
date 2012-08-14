@@ -5,6 +5,7 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.google.gson.Gson;
 import com.heroku.api.App;
 import com.heroku.api.HerokuAPI;
+import com.heroku.api.exception.RequestFailedException;
 import helpers.EmailHelper;
 import play.libs.F;
 import play.mvc.*;
@@ -49,9 +50,14 @@ public class Application extends Controller {
                     errors.get("error").put("shareApp", "Could not create the Heroku app");
                     renderJSON(errors);
                 }
-
-                // share the app with the provided email
-                herokuAPI.addCollaborator(app.getName(), emailAddress);
+                
+                try {
+                    // share the app with the provided email
+                    herokuAPI.addCollaborator(app.getName(), emailAddress);
+                }
+                catch (RequestFailedException e) {
+                    // this happens with new user accounts
+                }
 
                 // transfer the app to the provided email
                 herokuAPI.transferApp(app.getName(), emailAddress);
