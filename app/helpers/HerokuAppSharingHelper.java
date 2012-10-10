@@ -84,11 +84,16 @@ public class HerokuAppSharingHelper extends Job<App> {
         // git push the heroku repo
         gitRepo.push().setRemote(app.getGitUrl()).call();
 
-        // share the app with the provided email
-        herokuAPI.addCollaborator(app.getName(), emailAddress);
+        try {
+            // share the app with the provided email
+            herokuAPI.addCollaborator(app.getName(), emailAddress);
 
-        // transfer the app to the provided email
-        herokuAPI.transferApp(app.getName(), emailAddress);
+            // transfer the app to the provided email
+            herokuAPI.transferApp(app.getName(), emailAddress);
+        }
+        catch (RuntimeException e) {
+            e.printStackTrace();
+        }
 
         // remove ${HEROKU_USERNAME} as collaborator
         herokuAPI.removeCollaborator(app.getName(), System.getenv("HEROKU_USERNAME"));
